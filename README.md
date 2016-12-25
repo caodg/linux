@@ -1,5 +1,4 @@
-# linux
-Linux programming environment course at EECS, Peking University (in Chinese)
+# Linux Programming Environment Course 
 
 ---
 
