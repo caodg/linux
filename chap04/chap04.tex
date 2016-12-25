@@ -1,0 +1,903 @@
+\documentclass[compress]{beamer}
+
+%\setbeamercovered{dynamic}
+
+\usepackage[nofonts]{ctex}
+\setCJKmainfont[ItalicFont={Kaiti SC}]{Kaiti SC}%
+%\setCJKmainfont[ItalicFont={AR PL KaitiM GB}]{AR PL KaitiM GB}%
+%\setCJKsansfont{WenQuanYi Zen Hei}% 文泉驿的黑体
+
+\mode<beamer>
+{
+    \useinnertheme{rounded}
+    \useoutertheme{split}
+    \usecolortheme{rose}
+    \usecolortheme{seahorse}
+
+    \expandafter\def\expandafter\insertshorttitle\expandafter{%
+    \insertshorttitle\hfill%
+    \insertframenumber\,/\,\inserttotalframenumber}
+}
+
+\mode<handout>
+{
+	\usetheme{default}
+	\usepackage{pgfpages}
+	\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+}
+
+
+\usepackage{amsmath,latexsym,amssymb,amsfonts,amsbsy}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{fancybox}
+\usepackage{fancyvrb}
+\fvset{frame=single, fontsize=\small}
+
+\newcommand{\romannumber}[1]{{\textrm{\uppercase\expandafter{\romannumeral
+#1}}}}
+\setbeamercolor{dblue}{fg=white,bg=blue!40!black} % for beamercolorbox
+\newenvironment{pblock}{\begin{beamercolorbox}[rounded=true,
+          shadow=true]{dblue}}{\end{beamercolorbox}}
+
+
+\graphicspath{{figure/}}
+
+\lstset{
+	basicstyle=\footnotesize\ttfamily, % print whole listing footnotesize
+	keywordstyle=\footnotesize\ttfamily\color{black}\bfseries, 
+	identifierstyle=\footnotesize\ttfamily\color{blue}, 
+	commentstyle=\footnotesize\ttfamily\itshape, 
+	stringstyle=\footnotesize\ttfamily,
+	frame=single, 
+	numbers=left, numberstyle=\tiny,
+	stepnumber=1, numbersep=10pt,
+	showtabs=false, tabsize=4,
+	showstringspaces=false,
+	breaklines=true, breakatwhitespace=true,
+	language=[ISO]C++
+}   
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    body                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\AtBeginSection[]
+{ 
+    \begin{frame}<beamer> 
+		\frametitle{内容提要} 
+		\tableofcontents[currentsection,currentsubsection] 
+	\end{frame} 
+} 
+					
+\title{正则表达式}
+
+\author[\href{http://c.pku.edu.cn/}{http://c.pku.edu.cn/}]
+{曹东刚\\\href{mailto:caodg@sei.pku.edu.cn}{caodg@sei.pku.edu.cn}}
+
+\institute[北大信科]{Linux程序设计环境 \\
+\href{http://c.pku.edu.cn/}{
+http://c.pku.edu.cn/}}
+
+\date{}
+
+\titlegraphic{\includegraphics[height=0.17\textwidth]{Overlays/logo.pdf}}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\section{regexp}
+
+\begin{frame}
+\frametitle{基本概念}
+
+\begin{block}{正则表达式(REs: Regular Expressions)}
+用于描述一组字符串的表达式, 或称为模式。 英文缩写:
+regexp, regex, regxp, regexps, regexes, regexen.
+
+\begin{itemize}
+\item 正则表达式由普通字符(例如字符 a 到 z)以及元字符组成.
+\end{itemize}
+\end{block}
+
+\begin{block}{匹配(matched)}
+一个正则表达式和一个字符串匹配,如果该字符串中的字符序列和正则表达式定义的字符序列对应.
+\end{block}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{正则表达式文法}
+有多种不同的正则表达式, 文法有差异
+    \begin{itemize}
+    \item 传统Unix正则表达式, POSIX基本正则表达式(BRE)
+    \item POSIX扩展正则表达式(ERE)
+    \item Perl-Compatible Regular Expression (PCRE)
+    \end{itemize}
+\begin{Verbatim}
+$ sudo apt-get install pcregrep ack
+$ man pcrepattern
+$ echo hello | pcregrep -o h
+$ echo hello | ack -o h
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}
+\frametitle{正则表达式引擎}
+
+不同的正则表达式引擎对正则表达式有不同的解释
+\begin{block} {DFA引擎} 
+顺序输入, 速度快, 表达力弱. 最左最长匹配
+    \begin{itemize}
+    \item awk, egrep, mysql, lex\ldots
+    \end{itemize}
+\end{block}
+
+\begin{block}{传统NFA引擎} 
+	回溯(backtracking), 速度慢, 灵活, 表达力强.  最左匹配
+    \begin{itemize}
+    \item Perl, Java, .NET, PHP, Python, Ruby, sed, GNU emacs, vi\ldots
+    \end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{正则表达式引擎 (cont.)}
+
+\begin{block}{POSIX NFA引擎} 
+匹配成功后仍然尝试所有可能. 最左最长匹配
+\end{block}
+
+\begin{block}{混合引擎} 
+	DFA和NFA的优点
+\begin{itemize}
+	\item GNU awk与grep(两个单独的引擎), Tcl (单引擎)
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{NFA引擎}
+
+NFA引擎由正则表达式驱动
+
+\begin{enumerate}
+\item 引擎从regex开始, 尝试匹配字符串的首字符. 
+  \begin{itemize}
+	\item 如果两者不匹配, 则尝试首字符后面的字符.
+	\item 如果二者匹配, 引擎会继续读入regex, 并和剩下的字符串匹配. 
+  \end{itemize}
+\item 如果引擎处理完regex,且字符串匹配, 则认为匹配成功, 放弃其它选择.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{NFA引擎 (cont.)}
+  若regex有多个选择项, 此时
+  \begin{itemize}
+	\item NFA引擎将选择其中的一个, 
+	  并记录下其它的选择以及当前字符串位置.
+	\item 如果随后的匹配失败, 且有选择未尝试,
+	  引擎将\alert{回溯}到该选择点,尝试其它选择. 
+	\item 如果所有选择都不合法, 则匹配失败, 引擎处理下一个字符.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{NFA回溯规则}
+
+\begin{itemize}
+\item 总是首先回溯到最近保存的可选点, 如LIFO堆栈
+\item 在存在选择(alternation)的情况下, 按给出的顺序依次尝试
+\item 对于贪心限定符(greedy quantifier), 首先尝试另一个匹配, 最后选择跳过
+\item 对于非贪心限定符(lazy quantifier), 首先选择跳过, 最后尝试其它匹配
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{NFA回溯规则 (cont.)}
+  \begin{itemize}
+\item 对于原子组合(atomic grouping)或占有限定符(
+possessive quantifier)不保存后向引用.
+它们总是作为一个整体被处理.\\
+\item 占有限定符会取消回溯
+\end{itemize}
+\alert{小心给出选择的顺序, 尽量优化以减少回溯}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{元字符概览}
+\footnotesize
+\begin{tabular}{|l|p{8cm}|}\hline
+
+字符 & 描述 \\
+\hline\hline
+
+. &  匹配任何单个字符(是否匹配换行符依赖于匹配模式及引擎实现) \\
+\hline
+
+\textbackslash & 将下一个字符转义. 例: {\verb=\n=} 匹配一个换行符, {\verb=\\=}匹配`\textbackslash'\\
+\hline
+
+\textasciicircum & 匹配输入字符串的开始位置. 对于多行匹配,
+\textasciicircum 也匹配 `\verb=\n=' 或 `\verb=\r=' 之后的位置 \\
+\hline
+
+\$ & 匹配输入字符串的结束位置. 对于多行匹配, \$ 也匹配 `\verb=\n='
+或 `\verb=\r=' 之前的位置 \\ \hline
+
+* & 匹配前面的子表达式零次或多次. 例: {ab*} 能匹配 ``a'', ``ab''
+\\ \hline
+
+[xy-z]  & 字符集合, 匹配所包含的任意一个字符. 例: {
+[abc]} 可以匹配 ``ascii'' 中的 `a'。\\ \hline
+
+[\textasciicircum{}xyz]  & 负值字符集合, 匹配未包含的任意字符. 例: {[\textasciicircum{}abc]} 可以匹配 ``dog'' 中的 `d'。\\
+\hline
+\end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{元字符概览}
+\footnotesize
+\begin{tabular}{|l|p{8cm}|}\hline
+
+字符 & 描述 \\
+\hline\hline
+\verb=\( \)= &
+        将\verb=\( \)= 之间的表达式标记为``组''(group),并且保存匹配该表达式的字符(最多可以保存9个),
+        用 \textbackslash1 到\textbackslash9的符号来引用\\ \hline
+
+\verb=\{m,n\}= &
+        最少匹配 m 次且最多匹配 n 次. 例: {\verb=A[0-9]\{3\}=} 能够匹配A123,A348等,但不匹配A1234.
+        {\verb=A[0-9]\{5,6\}=} 匹配A12345, A234345\\ \hline
+
+\verb=\< \>= &
+        匹配词的开始和结束. 例: {\verb=\<the=}能够匹配字符串``in the
+        day''中的``the'',但不匹配``otherwise''中的``the'' \\
+        \hline\hline
+
+\textbar & 将两个匹配条件进行逻辑``或''运算. 例:
+{\verb=(him|her)=} 匹配``him''与``her'' \\ \hline
+
++ & 匹配它之前的那个字符1次或多次; 占有限定符 \\ \hline
+
+? & 匹配它之前的那个字符0次或1次; 非贪心限定符 \\ \hline
+
+\end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{普通字符}
+
+\begin{block} {匹配最先满足regex的字符串}
+regex \textbf{is} 匹配``this is a good
+toy''中``this''的``is''
+\end{block}
+
+\begin{block}{大小写敏感}
+regex \textbf{Cat}匹配``Cat'', 不匹配``cat''
+\end{block}
+
+需要转义的特殊字符: \verb=[= \verb=\= \verb=^= \verb=$= \verb=.= \verb=|= \verb=?= \verb=*= \verb=+= \verb=(=
+\verb=)=
+
+\begin{description}
+\item 例: regex {\verb#1+1=2#} 与 {\verb#1\+1=2#}
+
+\item 例: regex {``''}
+\end{description}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{字符集合 ---1}
+
+\begin{itemize}
+\item 例: regex {\verb=gr[ae]y=} 匹配 ``gray'' 或者
+``grey''
+
+\item 例: regex {\verb=[0-9a-fA-FX]= }
+匹配一个16进制数字字母,或字母``X''
+
+\item 例: regex {\verb=[A-Za-z_][A-Za-z_0-9]*= }
+程序语言中的标识符
+
+\item 例: regex {\verb=q[^u]=} 匹配``\verb*=Iraq ='',
+不匹配``Iraq''
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{字符集合 ---2}
+
+\begin{itemize}
+
+\item 字符集合(方括号中)中的特殊字符有``\verb=] - \ ^='', 在特定位置有特殊含义\footnote{转义字符的处理在不同的引擎中有可能有差别,请参考手册说明}.
+\item 例: regex {\verb=[+*]=}, {
+\verb=[x^]=}, {\verb=[]x]=}, {
+\verb=[^]x]=}, {\verb=[-x]=}
+
+\item 字符集合作为一个整体重复匹配. \\
+例: regex { \verb=[0-9]+=}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{POSIX预定义字符集合}
+
+\footnotesize
+
+\begin{tabular}{|l|l|l|}\hline
+
+类别 & 含义 & 解释 \\ \hline\hline
+
+\verb=[:upper:]= & \verb=[A-Z]= & 大写字母 \\ \hline
+
+\verb=[:lower:]= & \verb=[a-z]= & 小写字母 \\ \hline
+
+\verb=[:alpha:]= & \verb=[A-Za-z]= & 大小写字母 \\ \hline
+
+\verb=[:alnum:]= & \verb=[A-Za-z0-9]= & 数字与大小写字母 \\
+\hline
+
+\verb=[:digit:]= & \verb=[0-9]= & 数字 \\ \hline
+
+\verb=[:xdigit:]= & \verb=[0-9A-Fa-f]= & 十六进制数字 \\ \hline
+
+\verb=[:punct:]= & \verb=[.,!?:...]= & 标点符号 \\ \hline
+
+\verb=[:blank:]= & \verb*=[ \t]= & 空格与制表符 \\ \hline
+
+\verb=[:space:]= & \verb*=[ \t\n\r\f\v]= & 空白字符 \\ \hline
+
+\verb=[:cntrl:]= & & 控制字符 \\ \hline
+
+\verb=[:graph:]= & \verb*=[^ \t\n\r\f\v]= & 可打印字符 \\
+\hline
+
+\verb=[:print:]= &  \verb=[^\t\n\r\f\v]= & 可打印字符与空格 \\
+\hline
+
+\end{tabular}\\
+
+使用的时候,前面要加括号, 如{\verb=[[:upper:]]=}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{PCRE预定义字符集合}
+
+\footnotesize
+
+\begin{tabular}{|l|p{8cm}|}\hline
+
+类别 & 含义 \\ \hline\hline
+
+\verb=\s= & 匹配任何空白字符, 等价于\verb*=[ \f\n\r\t\v]= \\
+\hline
+
+\verb=\S= & 匹配任何非空白字符, 等价于\verb*=[^ \f\n\r\t\v]= \\
+\hline
+
+\verb=\b= & 匹配一个单词边界, 指单词和空格间的位置.例:
+{\verb=er\b=} 可以匹配``never'' 中的 `er'，但不能匹配 ``verb'' 中的 `er'\\
+\hline
+
+\verb=\B= & 匹配非单词边界. 例: {\verb=er\B=}可以
+匹配 ``verb'' 中的 `er', 但不能匹配 ``never'' 中的 `er' \\ \hline
+
+\verb=\d= & 匹配一个数字字符, 等价于 \verb=[0-9]=. \\ \hline
+
+\verb=\D= & 匹配一个非数字字符, 等价于 \verb=[^0-9]=. \\ \hline
+
+\verb=\w= & 匹配包括下划线的任何单词字符,
+等价于\verb=[A-Za-z0-9_]= \\ \hline
+
+\verb=\W= & 匹配任何非单词字符, 等价于 \verb=[^A-Za-z0-9_]= \\
+\hline
+
+\end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{圆点(.)}
+
+缺省情况下, 圆点{\verb=.=} 等价于
+{\verb=[^\n]=} 或者 {\verb=[^\n\r]=}
+\begin{itemize}
+
+\item 单行模式: 圆点{.} 匹配换行符. PCRE中用{\verb=/s=}控制
+\item 多行模式: {\textasciicircum}和{\$}分别扩展匹配字符串中换行符的前后位置.
+PCRE中用{\verb=/m=}控制
+\item 单行模式只影响圆点, 与多行模式无关
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{圆点(.) 示例}
+
+\begin{block}{匹配mm/dd/yy, 允许多种日期分隔符}
+\begin{enumerate}
+\item {\verb=\d\d.\d\d.\d\d=}
+\item {\verb*=\d\d[- /.]\d\d[- /.]\d\d=}
+\item {\verb*=[0-1]\d[- /.][0-3]\d[- /.]\d\d=}
+\end{enumerate}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{多行模式示例}
+\noindent 找出 grep.txt中的 ``my ice tea''
+\begin{verbatim}
+$ cat grep.txt
+this is my
+ice tea.
+\end{verbatim}
+\pause
+\begin{verbatim}
+$ pcregrep -M -o 'my\s+ice\s+tea' grep.txt
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{另一个例子}
+对下面的输入字符串, 要求匹配一对双引号之间的字符串\\[2ex]
+\Ovalbox{Today, he said ``word one'' and ``word two''. What a puzzle.} \\[2ex]
+
+\begin{enumerate}
+\item regex {\verb=".*"=} 匹配结果为  ``word one'' and ``word two''  \\
+    星号*是贪心限定符
+\item regex {\verb*="[^"]*"=} 匹配结果为  ``word one''
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{定位符}
+
+常用定位符: {\verb=^ $ \b \B=}
+
+\begin{block}{验证用户输入合法数字串}
+	\begin{itemize}
+		\item regex \textbackslash{}d+  (Wrong!) 
+		\item regex  \textasciicircum\textbackslash{}d+\$ (Correct)
+\end{itemize}
+\end{block}
+
+\begin{block}{匹配单字母4}   
+	regex \textbackslash{}b4\textbackslash{}b 
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{选择符}
+选择符~\alert{\textbar}~的优先级最低
+
+\begin{itemize}
+\item reg {\verb=\b(cat|dog)\b=} : 匹配单词cat或dog 
+
+\begin{itemize} \item 比较 reg {\verb=\bcat|dog\b=}
+\end{itemize}
+
+\item
+输入字符串为``SetValue'', \\
+regex 为 {\verb=Get|GetValue|Set|SetValue=}
+    \begin{itemize}
+    \item 比较: regex {\verb=Get|GetValue|SetValue|Set=}
+    \item 比较: regex {\verb=Get(Value)?|Set(Value)?=}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{数量限定符}
+\begin{itemize}
+\item 数量限定符{\verb=? * +=}以及{\verb={m,n}=} 缺省情况下是``贪心''的
+
+\item 例: 找到下面字符串中的HTML标识符, \\[2ex]
+	\Ovalbox{This is a <EM>first</EM> test} \\
+
+    \begin{itemize}
+    \item regexp {\verb=<.+>=} 匹配的结果是: 
+$<$EM$>$first$<$/EM$>$
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{非贪心限定符}
+
+  \begin{itemize}
+\item 将数量限定符改为``非贪心''(Laziness):
+将问号\textbf{?}放到表达式的后面
+    \begin{itemize}
+    \item 对上面例子应用regexp {\verb=<.+?>=}
+    \item 比较负值运算: regexp {\verb=<[^>]+>=}
+    \item 对于输入字符串``1234567 122'', 比较 regexp
+{\verb=[1-9][0-9]{2,4}=} 和 {\verb=[1-9][0-9]{2,4}?=}
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{组合与后向引用}
+
+一对圆括号()将其中的所有正则表达式组合为一个子表达式,
+并创建一个后向引用(backreference).
+
+\begin{itemize}
+\item regex {\verb=Set(Value)?=} 匹配 ``Set'' 或者
+``SetValue'', 对于前者, 后向引用的值为空; 对于后者,
+后向引用的值为``Value'' 
+\item 例: regex {\verb=([a-c])x\1=} 匹配:  ``axa'',
+``bxb'', ``cxc'' 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{组合与后向引用 (cont.)}
+
+更多例子
+\begin{itemize}
+
+\item 对 ``\verb=Testing <B><I>bold italic</I></B> text=''\\
+  应用 regex {\verb=<([A-Z][A-Z0-9]*)[^>]*>.*?</\1>=}
+    \begin{itemize}
+    \item 结果为: ``\verb=<B><I>bold italic</I></B>='' 
+    \end{itemize}
+
+\item 例: 对字符串``cab'', 比较regex {\verb=([abc]+)=} 和 
+	regex { \verb=([abc])+=}
+    \begin{itemize}
+    \item 前者后向引用为``cab'', 后者为``b''(后面的结果覆盖前面的)
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{断言}
+\noindent 问题: 找到字符串 \verb~<td>Nice</td>~ 中td tag的内容. \\
+\noindent 方法: 前向(look-ahead)与后向(look-behind)断言.
+\begin{block}{前向断言}
+    \begin{itemize}
+        \item 肯定断言 \verb~(?=)~
+            \begin{itemize}
+                \item 例: \verb~\w+(?=;)~
+    \end{itemize}
+        \item 否定断言 \verb~(?!)~
+            \begin{itemize}
+                \item 例: \verb~ foo(?!bar)~ 
+            \end{itemize}
+    \end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{断言--- cont.}
+\begin{block}{后向断言}
+    \begin{itemize}
+        \item 肯定断言 \verb~(?<=)~
+            \begin{itemize}
+                \item 例: \verb~(?<=linu)X~
+    \end{itemize}
+        \item 否定断言 \verb~(?<!)~
+            \begin{itemize}
+                \item 例: \verb~ (?<!foo)bar~ 
+            \end{itemize}
+    \end{itemize}
+\end{block}
+\verb~<td>Nice</td>~的tag内容的匹配: \\
+\verb~(?<=<td>).*?(?=</td>)~
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{占有限定符 possessive quantifier}
+\noindent 取消贪心匹配的回溯, 数量限定符后加加号 +
+
+\begin{Verbatim}
+$ echo ababacd | ack -o '(ab)*a'
+$ echo ababacd | ack -o '(ab)*?a'
+$ echo ababacd | ack -o '(ab)*+a'
+$ echo aaaaaaa | ack -o 'a?+a'
+$ echo aaaaaaa | ack -o 'a+a'
+$ echo aaaaaaa | ack -o 'a++a'
+\end{Verbatim}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{优先级顺序}
+
+\begin{tabular}{|l|p{4cm}|} \hline
+
+操作符 & 描述 \\ \hline\hline
+
+\textbackslash & 转义符 \\ \hline
+
+\verb=(), []= & 组合符和集合符 \\ \hline
+
+\verb=*, +, ?, {n}, {n,}, {n,m}= & 数量限定符 \\ \hline
+
+\verb=^, $= & 定位符和顺序 \\ \hline
+
+\verb=|= & 逻辑``或''操作 \\ \hline
+
+\end{tabular}
+\end{frame}
+
+\section{grep}
+
+\begin{frame}[fragile]
+	\frametitle{grep}
+
+\alert{grep}(全局正则表达式), 允许
+对文本文件进行模式查找。如果找到匹配模式,
+\alert{grep}打印包含模式的所有行
+
+{grep}有三种变型
+\begin{itemize}
+\item grep: 标准grep, 支持基本正则表达式
+\item egrep: 扩展grep, 支持基本及扩展的正则表达式
+\item fgrep: 快速grep, 允许查找字符串而不是一个模式
+\end{itemize}
+
+\Ovalbox{ack 被设计为取代99\%的grep使用, ack支持PCRE}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\frametitle{grep (cont.)}
+{grep}命令格式:\\
+grep [选项] 正则表达式 [文件]
+
+\begin{Verbatim}
+$ echo abcdabcd | grep -o -P '(ab)*a' # pcre grep
+\end{Verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{单引号与双引号}
+
+shell在处理命令时, 要对输入进行解释. 为了把参数正确传递给程序,
+有时候需要阻止shell扩展参数中的特殊字符,
+这可通过单引号或双引号实现.
+
+\begin{itemize}
+\item 双引号: 只对输入字符串中的\verb=$ `` \=进行扩展\\[2em]
+\begin{Verbatim}
+$ BOY=boy; echo "The $BOY did well"
+$ echo "The $DAY is `date`"
+\end{Verbatim}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{单引号与双引号(cont.)}
+\begin{itemize}
+\item 单引号: 对输入字符串不做任何特殊处理\\[1em]
+\begin{Verbatim}
+caodg@debian:~$ BOY=boy; echo 'The $BOY did well'
+\end{Verbatim}
+
+\item 输入模式参数给{grep}时, 用单括号将模式括起来\\[1em]
+\begin{Verbatim}
+caodg@debian:~$ grep '[ab]*|45$' input.txt
+\end{Verbatim}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{grep示例}
+
+\begin{itemize}
+\item 在当前目录下的*.c文件中查找字符串``printf''
+(不分大小写)\\
+\begin{Verbatim}
+caodg@debian:~$ grep -i 'printf' *.c
+\end{Verbatim}
+
+\item 统计文件main.c中包含字符串``printf''的总行数\\
+\begin{Verbatim}
+caodg@debian:~$ grep -c 'printf' main.c
+\end{Verbatim}
+
+\item 列出main.c中包含字符串``printf''的每一行\\
+\begin{Verbatim}
+caodg@debian:~$ grep -n 'printf' main.c
+\end{Verbatim}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{grep示例 (cont.)}
+
+\begin{itemize}
+\item 列出main.c中不包含字符串``printf''的每一行\\[1em]
+\begin{Verbatim}
+caodg@debian:$ grep -v 'printf' main.c
+\end{Verbatim}
+
+\item
+递归搜索目录worm下的包含字符串``trojan''的文本文件\\[1em]
+\begin{Verbatim}
+grep -r --binary-files=without-match 'trojan' worm
+\end{Verbatim}
+
+\end{itemize}
+\end{frame}
+
+\section{find}
+
+\begin{frame}[fragile]
+\frametitle{find}
+
+\alert{find} 查找文件系统中具有特定特征的文件\\
+命令格式: \verb=find [路径] [表达式]=
+
+\begin{itemize}
+\item 查找/home目录下所有的core文件\\
+\begin{Verbatim}
+caodg@debian:~$ find /home -name core -print
+\end{Verbatim}
+
+注意: 尽量输出相对路径, 当备份时可以在临时目录恢复.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{find---示例}
+
+\begin{itemize}
+\item 查找/home目录下文件名包含``core''的文件\\
+\begin{Verbatim}
+caodg@debian:~$ find /home -name '*core*' -print
+\end{Verbatim}
+
+\item 查找属主帐户被删除的文件\\
+\begin{Verbatim}
+caodg@debian:~$ find /var -nouser 
+\end{Verbatim}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{查找特定类型的文件}
+
+\begin{itemize}
+\item 查找/home目录下所有的目录文件
+\begin{Verbatim}
+caodg@debian:~$ find /home -type d 
+\end{Verbatim}
+{\small
+\begin{tabular}{c@{\hspace{2cm}}l} \hline
+类型 & 描述 \\ \hline
+
+f & 普通文件 \\
+d & 目录 \\
+b & 块设备文件 \\
+c & 字符设备文件 \\
+l & 符号链接文件 \\
+p & 管道文件 \\ \hline
+
+\end{tabular}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{按大小查找文件}
+
+\begin{itemize}
+\item 查找/home目录下大于100M的文件\\
+\begin{Verbatim}
+caodg@debian:~$ find /home -size +100M 
+\end{Verbatim}
+{\small
+\begin{tabular}{c@{\hspace{2cm}}l} \hline
+类型 & 描述 \\ \hline
+
+b & 512 byte磁盘块(default) \\
+c & 字节 \\
+w & 双字节 \\
+k & kilobyte \\
+M & megabyte \\
+G & gigabyte \\ \hline
+\end{tabular}}
+
+\item 注意: 数字前面加加号, 表示大于给定值; 减号, 表示小于给定值;
+什么都不加表示等于
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{按时间查找文件}
+
+\begin{itemize}
+\item 查找/home目录下最近5天内内容修改过的文件\\
+\begin{Verbatim}
+caodg@debian:~$ find /home -mtime -5 
+\end{Verbatim}
+
+\item 查找/home目录下5天前访问过的文件\\
+\begin{Verbatim}
+caodg@debian:~$ find /home -atime +5 
+\end{Verbatim}
+
+\item 查找/home目录下最近5天内状态改变过的文件\\
+\begin{Verbatim}
+caodg@debian:~$ find /home -ctime -5 
+\end{Verbatim}
+
+\item 查找当前目录下比a.txt新的文件\\
+\begin{Verbatim}
+caodg@debian:~$ find . -newer a.txt 
+\end{Verbatim}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{选项组合}
+
+\begin{itemize}
+\item 查找/home目录下最近5天内内容修改过的普通文件\\
+\begin{Verbatim}
+~$ find /home -type f -mtime -5 
+\end{Verbatim}
+
+
+\item 查找当前目录下比a.txt新, 但比b.txt老的文件\\
+\begin{Verbatim}
+~$ find . -newer a.txt ! -newer b.txt
+\end{Verbatim}
+
+\item 查找core文件或者tmp目录\\
+\begin{Verbatim}
+~$ find . -name core -o \( -type d -name tmp \)
+\end{Verbatim}
+\begin{itemize}
+\item 注意空格: ``\verb*=\( expression \)=''
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{对找到的文件执行动作}
+
+\begin{itemize}
+\item 删掉/home目录下的所有core文件\\
+\begin{Verbatim}
+~$ find /home -name core -exec rm -f {} \;
+\end{Verbatim}
+
+\begin{Verbatim}
+~$ find /home -name core -delete
+\end{Verbatim}
+
+
+\item 将所有tgz文件移动到/tmp目录下并确认\\
+\begin{Verbatim}
+~$ find /home -name "*.tgz" -ok mv {} /tmp \;
+\end{Verbatim}
+\end{itemize}
+
+\end{frame}
+
+\end{document}

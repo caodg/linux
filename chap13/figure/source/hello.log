@@ -1,0 +1,50 @@
+This is e-TeX, Version 3.141592-2.1 (MiKTeX 2.4) (preloaded format=latex 2005.8.23)  22 MAY 2006 23:02
+entering extended mode
+**hello.tex
+(hello.tex
+LaTeX2e <2001/06/01>
+Babel <v3.7m> and hyphenation patterns for english, french, german, ngerman, du
+mylang, nohyphenation, loaded.
+(E:\latex\texmf\tex\latex\base\article.cls
+Document Class: article 2001/04/21 v1.4e Standard LaTeX document class
+(E:\latex\texmf\tex\latex\base\size10.clo
+File: size10.clo 2001/04/21 v1.4e Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+No file hello.aux.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+[1
+
+] (hello.aux) ) 
+Here is how much of TeX's memory you used:
+ 209 strings out of 95923
+ 1948 string characters out of 1195345
+ 45566 words of memory out of 1049630
+ 3298 multiletter control sequences out of 35000
+ 3640 words of font info for 14 fonts, out of 500000 for 3000
+ 14 hyphenation exceptions out of 607
+ 23i,4n,17p,129b,107s stack positions out of 1500i,500n,5000p,200000b,32768s
+
+Output written on hello.dvi (1 page, 248 bytes).

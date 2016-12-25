@@ -1,0 +1,14 @@
+\documentclass[a4paper,11pt]{article}
+\author{Donggang Cao}
+\title{Demonstrate \LaTeX Structure}
+\begin{document}
+% generates the title
+\maketitle
+% insert the table of contents
+\tableofcontents
+\section{Begin}
+Well, and here begins my lovely article.
+\subsection{Theorem One}
+\section{Conclusion}
+Here it ends.
+\end{document}

@@ -1,0 +1,305 @@
+\documentclass{beamer}
+
+\usepackage[nofonts]{ctex}
+\setCJKmainfont[ItalicFont={Kaiti SC}]{Kaiti SC}
+%\setCJKmainfont[ItalicFont={AR PL KaitiM GB}]{AR PL KaitiM GB}%
+%\setCJKsansfont{WenQuanYi Zen Hei}% 文泉驿的黑体
+
+\mode<beamer>
+{
+    \useinnertheme{rounded}
+    \useoutertheme{split}
+    \usecolortheme{rose}
+    \usecolortheme{seahorse}
+
+	\expandafter\def\expandafter\insertshorttitle\expandafter{%
+	\insertshorttitle\hfill%
+	\insertframenumber\,/\,\inserttotalframenumber}
+}
+
+\mode<handout>
+{
+	\usetheme{default}
+	\usepackage{pgfpages}
+	\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+}
+
+
+\usepackage{amsmath,latexsym,amssymb,amsfonts,amsbsy}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{fancyvrb}
+\fvset{frame=single,fontsize=\small}
+
+\newcommand{\romannumber}[1]{{\textrm{\uppercase\expandafter{\romannumeral
+#1}}}}
+\setbeamercolor{dblue}{fg=white,bg=blue!40!black} % for beamercolorbox
+\newenvironment{pblock}{\begin{beamercolorbox}[rounded=true,
+              shadow=true]{dblue}}{\end{beamercolorbox}}
+
+
+\graphicspath{{figure/}}
+
+\lstset{
+	basicstyle=\footnotesize, % print whole listing footnotesize
+	keywordstyle=\color{black}\bfseries, 
+	identifierstyle=\color{blue}, 
+	commentstyle=\itshape, 
+	stringstyle=\ttfamily,
+	frame=single, 
+	numbers=left, numberstyle=\tiny,
+	stepnumber=1, numbersep=10pt,
+	showtabs=false, tabsize=4,
+	showstringspaces=false,
+	breaklines=true, breakatwhitespace=true,
+	language=[ISO]C++
+}   
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    body                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\AtBeginSection[]
+{ 
+    \begin{frame}<beamer> 
+		\frametitle{内容提要} 
+		\tableofcontents[currentsection,currentsubsection] 
+	\end{frame} 
+} 
+					
+\title{开源软件的经济模式}
+
+\author[\href{http://c.pku.edu.cn/}{http://c.pku.edu.cn/}]
+{曹东刚\\\href{mailto:caodg@sei.pku.edu.cn}{caodg@sei.pku.edu.cn}\\
+\href{http://c.pku.edu.cn/}{
+http://c.pku.edu.cn/}}
+
+\institute{Linux程序设计环境}
+\date{}
+
+\titlegraphic{\includegraphics[height=0.17\textwidth]{Overlays/logo.pdf}}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{The emerging economic paradigm of open source}
+By Bruce Perens \\
+\href{http://firstmonday.org/htbin/cgiwrap/bin/ojs/index.php/fm/article/viewArticle/1470/1385}{First
+Monday, Special Issue \#2: Open Source — 3 October 2005}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{开源是有经济模式的}
+	\begin{itemize}
+		\item ESR 的 ``The Cathedral and bazaar''带来的误解: gift economy
+		\item 当今红火的开源运动背后必有商业模式
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{微软的模式}
+	从厂商的角度: 你准备如何成为下一个微软？ \\
+	微软模式：仅对少部分单独售卖的软件（1/3）适用
+\end{frame}
+
+\begin{frame}
+	\frametitle{未被满足的需求}
+	\begin{itemize}
+		\item RMS: 提出程序员的哲学理想---非商业人士的.
+		\item 微软: 垄断, 质量差, 用户无选择.
+		\item 开源: 让软件质量更高
+			\begin{itemize}
+				\item 企业用户直接参与开发
+				\item 企业互相合作
+				\item 鼓励竞争, 消除垄断
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{正视未曾实现的需求}
+	\begin{itemize}
+		\item 年轻大学生凭兴趣开发的操作系统统治了企业计算市场
+		\item IBM将重心从AIX转移到开源Linux
+		\item 微软首次受到业余程序员们的重大挑战
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{寻找经济模式}
+	\begin{block}{微软的成功模式}
+	使商业伙伴可在微软的软件协助下更好发展, 如果离开微软他们甚至无法开展自己的业务.
+	\end{block}
+\end{frame}
+
+\begin{frame}
+	\frametitle{商业中的软件}
+	\begin{itemize}
+		\item 区分业务的成本中心和利润中心
+			\begin{itemize}
+				\item 软件通常在成本中心中
+			\end{itemize}
+		\item 软件是大多数商业业务的使能技术
+			\begin{itemize}
+				\item 差异化 vs 无差异化
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{差异化 vs 大众化}
+	\begin{itemize}
+		\item 差异化: 核心竞争力, 如Amazon的推荐系统
+			\begin{itemize}
+				\item 竞争对手可否获得该产品
+				\item 用户是否可见到软件的效果
+			\end{itemize}
+		\item 大众化: 商业业务中90\%以上的软件
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{初步结论}
+	重点关注差异化、能提升业务的软件. \\
+	前提：能够成功找到自己业务中的差异化部分.
+\end{frame}
+
+\begin{frame}
+	\frametitle{NIH综合症}
+	NIH(Not Invented Here): 极大增加了业务成本 \\
+	\begin{block}{对策: 将非差异化部分开源}
+		风险和成本分摊. 集中关注核心的差异化部分.
+	\end{block}
+\end{frame}
+
+\begin{frame}
+	\frametitle{软件开发的经济模式}
+\begin{itemize}
+	\item 零售
+	\item 内部开发与外包
+	\item 非开源性质的联盟
+	\item 开源
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{零售模式}
+	\begin{itemize}
+		\item 只占软件开发中的30\%
+		\item 必须在产品成熟时才可推向市场
+		\item 由一家开发商单独承担极高的开发成本和市场风险
+		\item 售价的10\%用于产品自身研发
+		\item 只有在规模市场时才可成功
+		\item 不鼓励创新: WEB的例子
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{内部开发与外包模式}
+	\begin{itemize}
+		\item 内部开发: 客户自己雇佣程序员直接开发软件. 
+		\item 外包开发: 将开发任务承包给外部开发机构.
+		\item 客户对软件可控, 但风险和成本自担
+		\item 适合开发差异化软件, 不适合非差异化软件
+		\item 开发效率: 50\% - 80\% 
+		\item 承包开发者的问题
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{ 非开源性质的联盟 }
+
+	效率低下, 对差异化和非差异化软件的开发都不适合.
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{开源模式}
+	\begin{itemize}
+		\item 首先内部开发, 发布
+		\item \emph{别人发现有用}
+		\item 改善扩展
+			\begin{itemize}
+				\item 新代码要及时提交给原开发者, 否则难以维护
+			\end{itemize}
+		\item 形成开发社区是关键
+		\item 商业公司可通过开源软件提升自己的差异化业务
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{谁在为开源软件贡献}
+	\begin{itemize}
+		\item 志愿者
+		\item Linux厂商
+		\item 以开源软件为唯一业务的公司
+		\item 以开源软件为使能技术的公司
+		\item 服务商业
+		\item 终端用户
+		\item 政府
+		\item 科研机构
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{ 以开源软件为唯一业务的公司 }
+
+	\begin{itemize}
+		\item 开源和商业混合许可: MySQL BB
+		\item 开源软件, 和商业插件: Sendmail, Linux+DB2
+		\item 纯粹开源, 和服务支持
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{以开源软件为使能技术的公司}
+	以硬件厂商为代表
+\end{frame}
+
+\begin{frame}
+	\frametitle{服务商业}
+	将软件功能以服务的形式对外提供, 规避``分发问题''. \\
+	可能会受制于未来改进的GPL协议.
+\end{frame}
+
+\begin{frame}
+	\frametitle{开源软件如何做市场}
+    \begin{pblock}
+        ``达尔文主义''的自然进化\\
+    \end{pblock}
+	\begin{itemize}
+		\item 自由竞争
+		\item 50个用户以上的首先胜出
+		\item 形成开发社区的持续发展
+		\item 少独裁专制, 多自由民主
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{对程序员的影响}
+	\begin{itemize}
+		\item 对程序员的需求不会变少
+		\item 工资可能稍有影响, 但无关大局
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{搭便车的问题}
+	这其实不是个问题
+\end{frame}
+
+\begin{frame}
+	\frametitle{能生产开源的汽车吗?}
+	性质不同, 也许将来可以.
+\end{frame}
+
+\end{document}

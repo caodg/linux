@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0042)http://linux.asnc.edu.cn/albin/linux09.htm -->
+<HTML><HEAD><TITLE>Bourne Shell及shell编程(1)</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312">
+<STYLE type=text/css>.mybody {
+	FONT-SIZE: 16px; FONT-FAMILY: "宋体"
+}
+.mytitle {
+	FONT-SIZE: 24px; FONT-FAMILY: "宋体"
+}
+</STYLE>
+
+<META content="Microsoft FrontPage 5.0" name=GENERATOR></HEAD>
+<BODY text=#000000 vLink=#000000 aLink=#ff0000 link=#331199 bgColor=#ffffff 
+leftMargin=0 topMargin=0 bgproprerties="fixed">
+<FORM name=thisForm method=post>
+<DIV align=center>
+<CENTER><BR>
+<TABLE cellSpacing=0 cellPadding=0 width=660 border=0>
+  <TBODY>
+  <TR>
+    <TD><IMG height=26 
+      src="bshell01.files/preview.jpg" width=72 border=0><A 
+      href="http://cpss.zz.ha.cn"><IMG height=26 
+      src="bshell01.files/top.jpg" width=72 border=0></A><A 
+      href="bshell02.htm"><IMG height=26 
+      src="bshell01.files/next.jpg" width=72 
+  border=0></A></TD></TR></TBODY></TABLE><STRONG><FONT class=mytitle 
+size=+2><BR>Bourne Shell及shell编程(1) </FONT></STRONG><BR><SPAN class=mybody>作者: 
+<FONT face=宋体 color=#000040 size=2>何斌武 (hbwork@dlut.edu.cn,大连理工大学网络中心，April 
+1999.)</FONT></SPAN><FONT face=宋体 color=#000040 size=2> </FONT><BR>
+<TABLE cellPadding=0 width="60%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD align=left width="100%"><PRE> <FONT class=mybody color=#331199 size=3>
+  
+Bourne Shell 
+
+介绍：Bourne Shell 基础及其他很多有用的特性，shell编程及组织。 
+
+主要内容： 
+.shell基础 基本介绍，环境，选项，特殊字符 
+.shell变量 用户定义变量，环境变量，位置变量(shell 参数) 
+.shell script编程 
+条件测试，循环及重复控制 
+.shell定制 
+
+1.shell基础知识 
+作者：Stephen Bourne 在Bell实验室开发 
+建议：man sh 查看相关UNIX上的改进或特性 
+
+(1)shell提示符及其环境 
+/etc/passwd文件 
+提示符：$ 
+/etc/profile $HOME/.profile 
+(2)shell执行选项 
+-n 测试shell script语法结构，只读取shell script但不执行 
+-x 进入跟踪方式，显示所执行的每一条命令，用于调度 
+-a Tag all variables for export 
+-c "string" 从strings中读取命令 
+-e 非交互方式 
+-f 关闭shell文件名产生功能 
+-h locate and remember functions as defind 
+-i 交互方式 
+-k 从环境变量中读取命令的参数 
+-r 限制方式 
+-s 从标准输入读取命令 
+-t 执行命令后退出(shell exits) 
+-u 在替换中如使用未定义变量为错误 
+-v verbose,显示shell输入行 
+
+这些选项可以联合使用，但有些显然相互冲突，如-e和-i. 
+
+(3)受限制shell(Restircted Shell) 
+sh -r 或 /bin/rsh 
+
+不能执行如下操作：cd, 更改PATH,指定全路径名，输出重定向，因此可以提供一个较 
+好的控制和安全机制。通常rsh用于应用型用户及拨号用户，这些用户通常是看不到提 
+示符的。通常受限制用户的主目录是不可写的。 
+
+不足：如果用户可以调用sh,则rsh的限制将不在起作用，事实上如果用户在vi及more 
+程序中调用shell,而这时rsh的限制将不再起作用。 
+
+(4)用set改变 shell选项 
+用户可以在$提示符下用set命令来设置或取消shell的选项。使用-设置选项，+取消相应 
+选项，大多数UNIX系统允许a,e,f,h,k,n,u,v和x的开关设置/取消。 
+
+set -xv 
+启动跟踪方式;显示所有的命令及替换，同样显示输入。 
+set -tu 
+关闭在替换时对未定义变量的检查。 
+
+使用echo $-显示所有已设置的shell选项。 
+
+
+(5)用户启动文件 .profile 
+PATH=$PATH:/usr/loacl/bin; export PATH 
+
+(6)shell环境变量 
+CDPATH 用于cd命令的查找路径 
+HOME /etc/passwd文件中列出的用户主目录 
+IFS Internal Field Separator,默认为空格，tab及换行符 
+MAIL /var/mail/$USERNAME mail等程序使用 
+PATH 
+PS1，PS2 默认提示符($)及换行提示符(&gt;) 
+TERM 终端类型，常用的有vt100,ansi,vt200,xterm等 
+
+示例：$PS1="test:";export PS1 
+test: PS1="\$";export PS1 
+$echo $MAIL 
+/var/mail/username 
+(7)保留字符及其含义 
+$ shell变量名的开始，如$var 
+| 管道，将标准输出转到下一个命令的标准输入 
+# 注释开始 
+&amp; 在后台执行一个进程 
+？ 匹配一个字符 
+* 匹配0到多个字符(与DOS不同，可在文件名中间使用，并且含.) 
+$- 使用set及执行时传递给shell的标志位 
+$! 最后一个子进程的进程号 
+$# 传递给shell script的参数个数 
+$* 传递给shell script的参数 
+$@ 所有参数，个别的用双引号括起来 
+$? 上一个命令的返回代码 
+$0 当前shell的名字 
+$n (n:1-) 位置参数 
+$$ 进程标识号(Process Identifier Number, PID) 
+&gt;file 输出重定向 
+`command` 命令替换，如 filename=`basename /usr/local/bin/tcsh` 
+&gt;&gt;fiile 输出重定向，append 
+
+转义符及单引号： 
+$echo "$HOME $PATH" 
+/home/hbwork /opt/kde/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin: 
+$echo '$HOME $PATH' 
+$HOME $PATH 
+$echo \$HOME $PATH 
+$HOME /opt/kde/bin:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/home/hbwork/bin 
+
+其他： 
+$dir=ls 
+$$dir 
+$alias dir ls 
+$dir 
+
+ls &gt; filelist 
+ls &gt;&gt; filelist 
+wc -l &lt; filelist 
+wc -l filelist 
+sleep 5; echo 5 seconds reaches; ls -l 
+ps ax |egrep inetd 
+find / -name core -exec rm {} \; &amp; 
+filename=`date "+%Y%m%d"`.log 
+
+2. shell变量 
+变量：代表某些值的符号，如$HOME,cd命令查找$HOME,在计算机语言中可以使用变量可以 
+进行多种运算和控制。 
+
+Bourne Shell有如下四种变量： 
+.用户自定义变量 
+.位置变量即 shell script之参数 
+.预定义变量（特殊变量） 
+.环境变量(参考shell定制部分) 
+(1)用户自定义变量（数据的存储） 
+$ COUNT=1 
+$ NAME="He Binwu" 
+
+技巧：因为大部分UNIX命令使用小写字符，因此在shell编程中通常使用全大写变量， 
+当然这并不是强制性的，但使用大写字符可以在编程中方便地识别变量。 
+
+变量的调用：在变量前加$ 
+$ echo $HOME 
+/home/hbwork 
+$ WEEK=Satur 
+$ echo Today is $WEEKday 
+Today is 
+$echo Today is ${WEEK}day 
+Today is Saturday 
+
+Shell变量赋值从右从左进行(Linux Shell/bash从左向右赋值!) 
+$ X=$Y Y=y 
+$ echo $X 
+y 
+$ Z=z Y=$Z 
+$ echo $Y 
+
+$ 
+
+使用unset命令删除变量的赋值 
+$ Z=hello 
+$ echo $Z 
+hello 
+$ unset Z 
+$ echo $Z 
+
+$ 
+
+有条件的命令替换 
+在Bourne Shell中可以使变量替换在特定条件下执行，即有条件的环境变量替换。 
+这种变量替换总是用大括号括起来的。 
+
+.设置变量的默认值 
+在变量未赋值之前其值为空。Bourne Shell允许对变量设置默认值，其格式如下： 
+${variable:-defaultvalue} 
+例： 
+$ echo Hello $UNAME 
+Hello 
+$ echo Hello ${UNAME:-there} 
+Hello there 
+$ echo $UNAME #变量值并未发生变化 
+
+$ UNAME=hbwork 
+$ echo Hello ${UNAME:-there} 
+Hello hbwork 
+$ 
+.另一种情况：改变变量的值，格式如下： 
+${variable:=value} 
+
+例： 
+$ echo Hello $UNAME 
+Hello 
+$ echo Hello ${UNAME:=there} 
+Hello there 
+$ echo $UNAME #变量值并未发生变化 
+there 
+$ 
+.变量替换中使用命令替换 
+$USERDIR=${$MYDIR:-`pwd`} 
+
+.在变量已赋值时进行替换 ${variable:+value} 
+.带有错误检查的有条件变量替换 
+${variable:?value} 
+例： 
+$ UNAME= 
+$ echo ${UNAME:?"UNAME has not been set"} 
+UNAME: UNAME has not been set 
+$ echo ${UNAME:?} 
+UNAME: parameter null or not set 
+
+(2)位置变量(Shell参数) 
+在shell script中位置参数可用$1..$9表示，$0表示内容通常为当前执行程序的文件名。 
+.防止变量值被替换 readonly variable 
+.使用export命令输出变量，使得变量对子shell可用，当shell执行一下程序时，shell 
+将为其设置一个新的环境让其执行，这称之了subshell. 在Bourne Shell中变量通常 
+被认为是本地变量，也就是说在对其赋值之外的shell环境之外是不认识此变量的。使 
+用export对subshell可用。 
+
+例：对变量PS1的export操作，shell的提示符将发生变化。 
+$ PS1=`hostname`$ 
+peony$sh 
+$ echo $PS1 
+$ &lt;-输出结果 
+$ exit 
+peony$export PS1 
+peony$sh 
+peony$ echo $PS1 
+peony$ &lt;-输出结果 
+peony$ 
+
+
+3.Shell Script编程 
+目的：使用UNIX所提供的最常用工具来完成所需复杂任务的强大功能。 
+
+(1)最简单的Shell 编程 
+$ls -R / |grep myname |more 
+
+每天数据的备份： 
+$ cd /usr/yourname; ls * |cpio -o &gt; /dev/rmt/0h 
+
+书写程序的目的是一次编程，多次使用（执行）！ 
+
+$ cat &gt; backup.sh 
+cd /home/hbwork 
+ls * | cpio -o &gt; /dev/rmt/0h 
+^D 
+
+执行： 
+$ sh backup.sh 
+
+或： 
+$ chmod +x backup.sh 
+$ ./backup.sh 
+
+技巧：在shell script中加入必要的注释，以便以后阅读及维护。 
+
+(2)shell是一个（编程）语言 
+同传统的编程语言一样，shell提供了很多特性，这些特性可以使你的shell script 
+编程更为有用，如：数据变量、参数传递、判断、流程控制、数据输入和输出，子 
+程序及以中断处理等。 
+
+. 在shell编程中使用数据变量可以将程序变量更为通用，如在上面backup.sh中： 
+cd $WORKDIR 
+ls * | cpio -o &gt; /dev/rmt/0h 
+
+. Shell编程中的注释以#开头 
+. 对shell变量进行数字运算，使用expr命令 
+expr integer operator integer 
+其中operator为+ - * / %, 但对*的使用要用转义符\,如： 
+$expr 4 \* 5 
+20 
+$int=`expr 5 + 7` 
+$echo $int 
+12 
+
+(3)Shell编程的参数传递, 可通过命令行参数以及交互式输入变量(read) 
+
+restoreall.sh 对backup.sh程序的备份磁带进行恢复 
+$cat &gt; restoreall.sh 
+cd $WORKDIR 
+cpio -i &lt; /dev/rmt/0h 
+^D 
+restore1.sh:只能恢复一个文件 
+#restore1 --program to restore a single file 
+cd $WORKDIR 
+cpio -i $i &lt; /dev/rmt/0h 
+
+$restore1 file1 
+
+恢复多个文件restoreany : 
+#restoreany --program to restore a single file 
+cd $WORKDIR 
+cpio -i $* &lt; /dev/rmt/0h 
+
+$ restoreany file1 file2 file3 
+
+
+(4)条件判断 
+. if-then语句,格式如下: 
+if command_1 
+then 
+command_2 
+command_3 
+fi 
+command_4 
+
+在if-then语句中使用了命令返回码$?,即当command_1执行成功时才执行command_2和 
+command_3,而command_4总是执行. 
+
+示例程序unload: 在备份成功时删除原始文件,带有错误检查 
+
+cd $1 
+#备份时未考虑不成功的情况! 
+ls -a | cpio -o &gt; /dev/rmt/0h 
+rm -rf * 
+
+改进如下: 
+
+#当使用了管道命令时,管理命令的返回代码为最后一个命令的返回代码 
+if ls -a | cpio -o &gt; /dev/rmt/0h 
+then 
+rm -rf * 
+fi 
+
+. if-then-else语句 
+if command_1 
+then 
+command_2 
+else 
+command_3 
+fi 
+
+技巧: 由于shell对命令中的多余的空格不作任何处理,一个好的程序员会用这一特性 
+对自己的程序采用统一的缩进格式,以增强自己程序的可读性. 
+
+. 使用test命令进行进行条件测试 
+格式: test conditions 
+
+test在以下四种情况下使用: a. 字符比较 b.两个整数值的比较 
+c. 文件操作,如文件是否存在及文件的状态等 
+d. 逻辑操作,可以进行and/or,与其他条件联合使用 
+
+a. 测试字符数据: shell变量通常民政部下均作为字符变量 
+str1 = str2 二者相长,相同 
+str1 != str2 不同 
+-n string string不为空(长度不为零) 
+-z string string为空 
+string string不为空 
+
+例: 
+$ str1=abcd #在含有空格时必须用引号括起来 
+$ test $str1=abcd 
+$ echo $? 
+0 
+$ str1="abcd " 
+$ test $str1=abcd 
+$ echo $? 
+1 
+Note: 在test处理含有空格的变量时最好用引号将变量括起来,否则会出现错误的结果, 
+因为shell在处理命令行时将会去掉多余的空格,而用引号括起来则可以防止 
+shell去掉这些空格. 
+例: 
+$ str1=" " 
+$ test $str1 
+$ echo $? 
+1 
+$ test "$str1" 
+$ echo $? 
+0 
+$ test -n $str1 
+test: argument expected 
+$ test -n "$str1" 
+$ echo $? 
+0 
+$ 
+
+b. 整数测试: test与expr相同,可以将字符型变量转换为整数进行操作,expr进行 
+整数的算术运算,而test则进行逻辑运算. 
+
+表达式 说明 
+--------------------------------------- 
+int1 -eq int2 相等? 
+int1 -ne int2 不等? 
+int1 -gt int2 int1 &gt; int2 ? 
+int1 -ge int2 int1 &gt;= int2 ? 
+int1 -lt int2 int1 &lt; int2 ? 
+int1 -le int2 int1 &lt;= int2 ? 
+
+例: 
+$ int1=1234 
+$ int2=01234 
+$ test $int1 -eq $int2 
+$ echo $? 
+0 
+
+c. 文件测试:检查文件状态如存在及读写权限等 
+
+-r filename 用户对文件filename有读权限? 
+-w filename 用户对文件filename有写权限? 
+-x filename 用户对文件filename有可执行权限? 
+-f filename 文件filename为普通文件? 
+-d filename 文件filename为目录? 
+-c filename 文件filename为字符设备文件? 
+-b filename 文件filename为块设备文件? 
+-s filename 文件filename大小不为零? 
+-t fnumb 与文件描述符fnumb(默认值为1)相关的设备是一个终端设备? 
+
+d. 测试条件之否定,使用! 
+例: 
+$ cat /dev/null &gt; empty 
+$ test -r empty 
+$ echo $? 
+0 
+$ test -s empty 
+1 
+$ test ! -s empty 
+$ echo $? 
+0 
+e. 测试条件之逻辑运算 
+-a And 
+-o Or 
+
+例: $ test -r empty -a -s empty 
+$ echo $? 
+1 
+f. 进行test测试的标准方法 
+因为test命令在 shell编程中占有很重要的地位,为了使shell能同其他编程语言一样 
+便于阅读和组织, Bourne Shell在使用test测试时使用了另一种方法:用方括号将整个 
+test测试括起来: 
+
+$ int1=4 
+$ [ $int1 -gt 2 ] 
+$ echo $? 
+0 
+
+例: 重写unload程序,使用test测试 
+#!/bin/sh 
+#unload - program to backup and remove files 
+#syntax: unload directory 
+
+#check arguments 
+if [ $# -ne 1 ] 
+then 
+echo "usage: $0 directory" 
+exit 1 
+fi 
+
+#check for valid directory name 
+if [ ! -d "$1" ] 
+then 
+echo "$1 is not a directory" 
+exit 2 
+fi 
+
+cd $1 
+
+ls -a | cpio -o &gt; /dev/rmt/0h 
+
+if [ $? -eq 0 ] 
+then 
+rm -rf * 
+else 
+echo "A problem has occured in creating backup" 
+echo "The directory will not be ereased" 
+echo "Please check the backup device" 
+exit 3 
+fi 
+# end of unload 
+
+在如上示例中出现了exit, exit有两个作用:一是停止程序中其他命令的执行,二是 
+设置程序的退出状态 
+
+g. if嵌套及elif结构 
+if command 
+then 
+command 
+else 
+if command 
+then 
+command 
+else 
+if command 
+then 
+command 
+fi 
+fi 
+fi 
+
+改进:使用elif结构 
+if command 
+then 
+command 
+elif command 
+then 
+command 
+elif command 
+then 
+command 
+fi 
+
+elif结构同if结构类似,但结构更清淅,其执行结果完全相同. 
+
+
+-------------未完,待续---------- 
+</FONT>
+</PRE></TD></TR></TBODY></TABLE>
+<ADDRESS><BIG><FONT color=#000040 size=1>made by pageshop of CERNET network 
+centre of DaLian region.copyright 1999</FONT> </BIG></ADDRESS>
+<ADDRESS></ADDRESS>
+<ADDRESS></ADDRESS>
+<ADDRESS><BR></ADDRESS>
+<TABLE cellSpacing=0 cellPadding=0 width=660 border=0>
+  <TBODY>
+  <TR>
+    <TD><IMG height=26 
+      src="bshell01.files/preview.jpg" width=72 border=0><a href="http://cpss.zz.ha.cn"><IMG height=26 
+      src="bshell01.files/top.jpg" width=72 border=0></a><a href="bshell02.htm"><IMG height=26 
+      src="bshell01.files/next.jpg" width=72 
+  border=0></a></TD></TR></TBODY></TABLE><BR>
+<ADDRESS></ADDRESS></CENTER></DIV></FORM></BODY></HTML>

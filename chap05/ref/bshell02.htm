@@ -1,0 +1,774 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0042)http://linux.asnc.edu.cn/albin/linux10.htm -->
+<HTML><HEAD><TITLE>Bourne Shell及shell编程(2)</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=gb2312">
+<STYLE type=text/css>.mytitle {
+	FONT-SIZE: 24px; FONT-FAMILY: "宋体"
+}
+.mybody {
+	FONT-SIZE: 16px; FONT-FAMILY: "宋体"
+}
+</STYLE>
+
+<META content="Microsoft FrontPage 5.0" name=GENERATOR></HEAD>
+<BODY text=#000000 vLink=#000000 aLink=#ff0000 link=#331199 bgColor=#ffffff 
+leftMargin=0 topMargin=0 bgproprerties="fixed">
+<FORM name=thisForm method=post><BR>
+<TABLE cellSpacing=0 cellPadding=0 width=660 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD><a href="bshell01.htm"><IMG height=26 
+      src="bshell02.files/preview.jpg" width=72 border=0></a><a href="http://cpss.zz.ha.cn"><IMG height=26 
+      src="bshell02.files/top.jpg" width=72 border=0></a><IMG height=26 
+      src="bshell02.files/next.jpg" width=72 
+  border=0></TD></TR></TBODY></TABLE>
+<P align=center><STRONG><FONT size=+2><SPAN class=mytitle><BR>Bourne 
+Shell及shell编程(2) </SPAN></FONT></STRONG><BR><SPAN class=mybody>作者: <FONT face=宋体 
+color=#000040 size=2>何斌武 (hbwork@dlut.edu.cn,大连理工大学网络中心，April 1999.) 
+</FONT></SPAN></P>
+<DIV align=center>
+<CENTER>
+<TABLE class=mybody cellPadding=0 width="60%" border=0>
+  <TBODY>
+  <TR vAlign=top>
+    <TD align=left width="100%"><PRE> <FONT class=mybody color=#331199 size=3>
+  
+Bourne Shell及Shell编程(2) 
+h.交互式从键盘读入数据 
+使用read语句，其格式如下： 
+
+read var1 var2 ... varn 
+
+read将不作变量替换，但会删除多余的空格，直到遇到第一个换行符（回车）， 
+并将输入值依次赋值给相应的变量。 
+
+例： 
+$ read var1 var2 var3 
+Hello my friends 
+$ echo $var1 $var2 $var3 
+Hello my friends 
+$ echo $var1 
+Hello 
+$ read var1 var2 var3 
+Hello my dear friends 
+$ echo $var3 
+dear friends &lt;-输入多余变量时，输入值余下的内容赋给最后一个变量 
+$ read var1 var2 var3 
+Hello friends 
+$ echo $var3 
+&lt;- var3为空 
+$ 
+
+在shell script中可使用read语句进行交互操作： 
+
+... 
+#echo -n message 输出结果后不换行 
+echo -n "Do you want to continue: Y or N" 
+read ANSWER 
+
+if [ $ANSWER=N -o $ANSWER=n ] 
+then 
+exit 
+fi 
+
+i. case结构：结构较elif-then结构更清楚 
+
+比较if-then语句： 
+
+if [ variable1 = value1 ] 
+then 
+command 
+command 
+elif [ variable1 = value2 ] 
+then 
+command 
+command 
+elif [ variable1 = value3 ] 
+then 
+command 
+command 
+fi 
+
+相应的case结构： 
+
+case value in 
+pattern1) 
+command 
+command;; 
+pattern2) 
+command 
+command;; 
+... 
+patternn) 
+command; 
+esac 
+
+* case语句只执行第一个匹配模式 
+
+例：使用case语句建立一个菜单选择shell script 
+
+#Display a menu 
+echo _ 
+echo "1 Restore" 
+echo "2 Backup" 
+echo "3 Unload" 
+echo 
+
+#Read and excute the user's selection 
+echo -n "Enter Choice:" 
+read CHOICE 
+
+case "$CHOICE" in 
+1) echo "Restore";; 
+2) echo "Backup";; 
+3) echo "Unload";; 
+*) echo "Sorry $CHOICE is not a valid choice 
+exit 1 
+esac 
+
+在上例中，*指默认匹配动作。此外，case模式中也可以使用逻辑操作，如下所示： 
+
+pattern1 | pattern2 ) command 
+command ;; 
+
+这样可以将上面示例程序中允许用户输入数字或每一个大写字母。 
+
+case "$CHOICE" in 
+1|R) echo "Restore";; 
+2|B) echo "Backup";; 
+3|U) echo "Unload";; 
+*) echo "Sorry $CHOICE is not a valid choice 
+exit 1 
+esac 
+
+(5)循环控制 
+&lt;1&gt; while循环: 
+格式： 
+while command 
+do 
+command 
+command 
+command 
+... 
+done 
+
+例： 计算1到5的平方 
+#!/bin/sh 
+# 
+#Filename: square.sh 
+int=1 
+
+while [ $int -le 5 ] 
+do 
+sq=`expr $int \* $int` 
+echo $sq 
+int=`expr $int + 1` 
+done 
+echo "Job completed" 
+
+$ sh square.sh 
+1 
+4 
+9 
+16 
+25 
+Job completed 
+
+&lt;2&gt; until循环结构： 
+格式： 
+until command 
+do 
+command 
+command 
+.... 
+command 
+done 
+
+示例：使用until结构计算1-5的平方 
+#!/bin/sh 
+
+int=1 
+
+until [ $int -gt 5 ] 
+do 
+sq=`expr $int \* $int` 
+echo $sq 
+int=`expr $int + 1` 
+done 
+echo "Job completed" 
+
+&lt;3&gt; 使用shift对不定长的参数进行处理 
+在以上的示例中我们总是假设命令行参数唯一或其个数固定，或者使用$*将整个命令 
+行参数传递给shell script进行处理。对于参数个数不固定并且希望对每个命令参数 
+进行单独处理时则需要shift命令。使用shift可以将命令行位置参数依次移动位置， 
+即$2-&gt;$1, $3-&gt;$2. 在移位之前的第一个位置参数$1在移位后将不在存在。 
+
+示例如下： 
+
+#!/bin/sh 
+# 
+#Filename: shifter 
+
+until [ $# -eq 0 ] 
+do 
+echo "Argument is $1 and `expr $# - 1` argument(s) remain" 
+shift 
+done 
+
+
+$ shifter 1 2 3 4 
+Argument is 1 and 3 argument(s) remain 
+Argument is 2 and 2 argument(s) remain 
+Argument is 3 and 1 argument(s) remain 
+Argument is 4 and 0 argument(s) remain 
+$ 
+
+使用shift时，每进行一次移位，$#减1，使用这一特性可以用until循环对每个参 
+数进行处理，如下示例中是一个求整数和的shell script: 
+
+#!/bin/sh 
+# sumints - a program to sum a series of integers 
+# 
+
+if [ $# -eq 0 ] 
+then 
+echo "Usage: sumints integer list" 
+exit 1 
+fi 
+
+sum=0 
+
+until [ $# -eq 0 ] 
+do 
+sum=`expr $sum + $1` 
+shift 
+done 
+echo $sum 
+
+
+$ sh sumints 324 34 34 12 34 
+438 
+$ 
+
+使用shift的另一个原因是Bourne Shell的位置参数变量为$1~$9, 因此通过位置变量 
+只能访问前9个参数。但这并不等于在命令行上最多只能输入9个参数。此时如果想访问 
+前9个参数之后的参数，就必须使用shift. 
+
+另外shift后可加整数进行一次多个移位，如： 
+
+shift 3 
+
+
+&lt;4&gt;. for循环 
+格式： 
+for var in arg1 arg2 ... argn 
+do 
+command 
+.... 
+command 
+done 
+
+示例： 
+$ for letter in a b c d e; do echo $letter;done 
+a 
+b 
+c 
+d 
+e 
+
+对当前目录下的所有文件操作： 
+$ for i in * 
+do 
+if [ -f $i ] 
+then 
+echo "$i is a file" 
+elif [ -d $i ] 
+echo "$i is a directory" 
+fi 
+done 
+
+求命令行上所有整数之和： 
+#!/bin/sh 
+
+sum=0 
+
+for INT in $* 
+do 
+sum=`expr $sum + $INT` 
+done 
+
+echo $sum 
+
+
+&lt;6&gt; 从循环中退出： break和continue命令 
+break 立即退出循环 
+continue 忽略本循环中的其他命令，继续下一下循环 
+
+在shell编程中有时我们要用到进行无限循环的技巧，也就是说这种循环一直执行碰 
+到break或continue命令。这种无限循环通常是使用true或false命令开始的。UNIX 
+系统中的true总是返加0值，而false则返回非零值。如下所示： 
+
+#一直执行到程序执行了break或用户强行中断时才结束循环 
+while true 
+do 
+command 
+.... 
+command 
+done 
+
+上面所示的循环也可以使用until false, 如下： 
+
+until false 
+do 
+command 
+.... 
+command 
+done 
+
+在如下shell script中同时使用了continue,break以及case语句中的正规表达式用法： 
+
+#!/bin/sh 
+# Interactive program to restore, backup, or unload 
+# a directory 
+
+echo "Welcome to the menu driven Archive program" 
+
+while true 
+do 
+# Display a Menu 
+echo 
+echo "Make a Choice from the Menu below" 
+echo _ 
+echo "1 Restore Archive" 
+echo "2 Backup directory" 
+echo "3 Unload directory" 
+echo "4 Quit" 
+echo 
+
+# Read the user's selection 
+echo -n "Enter Choice: " 
+
+read CHOICE 
+
+case $CHOICE in 
+[1-3] ) echo 
+# Read and validate the name of the directory 
+
+echo -n "What directory do you want? " 
+read WORKDIR 
+
+if [ ! -d "$WORKDIR" ] 
+then 
+echo "Sorry, $WORKDIR is not a directory" 
+continue 
+fi 
+
+# Make the directory the current working directory 
+cd $WORKDIR;; 
+
+4) :;; # :为空语句，不执行任何动作 
+*) echo "Sorry, $CHOICE is not a valid choice" 
+continue 
+esac 
+
+case "$CHOICE" in 
+1) echo "Restoring..." 
+cpio -i 
+2) echo "Archiving..." 
+ls | cpio -o &gt;/dev/rmt/0h;; 
+
+3) echo "Unloading..." 
+ls | cpio -o &gt;/dev/rmt/0h;; 
+
+4) echo "Quitting" 
+break;; 
+esac 
+
+#Check for cpio errors 
+
+if [ $? -ne 0 ] 
+then 
+echo "A problem has occurred during the process" 
+if [ $CHOICE = 3 ] 
+then 
+echo "The directory will not be erased" 
+fi 
+
+echo "Please check the device and try again" 
+continue 
+else 
+if [ $CHOICE = 3 ] 
+then 
+rm * 
+fi 
+fi 
+done 
+
+
+(6)结构化编程：定义函数 
+同其他高级语言一样，shell也提供了函数功能。函数通常也称之为子过程(subroutine), 
+其定义格式如下： 
+
+funcname() 
+{ 
+command 
+... 
+command; #分号 
+} 
+
+定义函数之后，可以在shell中对此函数进行调用，使用函数定义可以将一个复杂的程序分 
+为多个可管理的程序段，如下所示： 
+
+# start program 
+
+setup () 
+{ command list ; } 
+
+do_data () 
+{ command list ; } 
+
+cleanup () 
+{ command list ; } 
+
+errors () 
+{ command list ; } 
+
+setup 
+do_data 
+cleanup 
+# end program 
+
+技巧： 
+. 在对函数命名时最好能使用有含义的名字，即函数名能够比较准确的描述函数所完成 
+的任务。 
+. 为了程序的维护方便，请尽可能使用注释 
+
+
+使用函数的另一个好处就是可以在一个程序中的不同地方执行相同的命令序列(函数), 
+如下所示： 
+
+iscontinue() 
+{ 
+while true 
+do 
+echo -n "Continue?(Y/N)" 
+read ANSWER 
+
+case $ANSWER in 
+[Yy]) return 0;; 
+[Nn]) return 1;; 
+*) echo "Answer Y or N";; 
+esac 
+done 
+} 
+
+这样可以在shell编程中调用iscontinue确定是否继续执行： 
+
+if iscontinue 
+then 
+continue 
+else 
+break 
+fi 
+
+
+** shell函数与shell程序非常相似，但二者有一个非常重要的差别：shell程序是由子shell 
+执行的，而shell函数则是作为当前shell的一部分被执行的，因此在当前shell中可以改 
+变函数的定义。此外在任意shell(包括交互式的shell)中均可定义函数，如： 
+
+$ dir 
+dir: not found 
+$ dir () { ls -l ;} 
+$ dir 
+total 5875 
+-rw-r--r-- 1 hbwork 100 Nov 10 23:16 doc 
+-rw-r--r-- 1 hbwork 2973806 Nov 10 23:47 ns40docs.zip 
+-rw-r--r-- 1 hbwork 1715011 Nov 10 23:30 ns840usr.pdf 
+-rw-r--r-- 1 hbwork 1273409 Sep 23 1998 radsol21b6.tar.Z 
+-rw-r--r-- 1 hbwork 7526 Nov 10 23:47 wget-log 
+-rw-r--r-- 1 hbwork 1748 Nov 13 21:51 wget-log.1 
+$ unset dir 
+$ dir () { 
+&gt; echo "Permission Link Owner Group File_SZ LastAccess FileName" 
+&gt; echo "-----------------------------------------------------------" 
+&gt; ls -l $*; 
+&gt; } 
+
+$ dir 
+Permission Link Owner Group File_SZ LastAccess FileName 
+----------------------------------------------------------- 
+total 5875 
+-rw-r--r-- 1 hbwork 100 Nov 10 23:16 doc 
+-rw-r--r-- 1 hbwork 2973806 Nov 10 23:47 ns40docs.zip 
+-rw-r--r-- 1 hbwork 1715011 Nov 10 23:30 ns840usr.pdf 
+-rw-r--r-- 1 hbwork 1273409 Sep 23 1998 radsol21b6.tar.Z 
+-rw-r--r-- 1 hbwork 7526 Nov 10 23:47 wget-log 
+-rw-r--r-- 1 hbwork 1748 Nov 13 21:51 wget-log.1 
+
+通常情况下，shell script是在子shell中执行的，困此在此子shell中对变量所作的 
+修改对父shell不起作用。点(.) 命令使用shell在不创建子shell而由当前shell读取 
+并执行一个shell script, 可以通过这种方式来定义函数及变量。此外点(.)命令最 
+常用的功能就是通过读取.profile来重新配置初始化login变量。如下所示： 
+
+$ . .profile 
+(csh相对于.命令的是source命令). 
+
+(7)使用And/Or结构进行有条件的命令执行 
+&lt;1&gt; And , 仅当第一个命令成功时才有执行后一个命令,如同在逻辑与表达式中如果前面的 
+结果为真时才有必要继续运算，否则结果肯定为假。 
+
+格式如下： 
+
+command1 &amp;&amp; command2 
+
+例：rm $TEMPDIR/* &amp;&amp; echo "File successfully removed" 
+
+等价于 
+
+if rm $TEMPDIR/* 
+then 
+echo "File successfully removed" 
+fi 
+
+&lt;2&gt;Or, 与AND相反，仅当前一个命令执行出错时才执行后一条命令 
+
+例： rm $TEMPDIR/* || echo "File not removed" 
+
+等价与： 
+
+if rm $TEMPDIR/* 
+then 
+command 
+else 
+echo "File not removed" 
+fi 
+
+&lt;3&gt; 混合命令条件执行 
+command1 &amp;&amp; command2 &amp;&amp; command3 
+当command1, command2成功时才执行command3 
+
+command1 &amp;&amp; command2 || comamnd3 
+仅当command1成功，command2失败时才执行command3 
+
+当然可以根据自己的需要进行多种条件命令的组合，在此不多讲述。 
+
+
+(8) 使用getopts命令读取unix格式选项 
+UNIX格式选项指如下格式的命令行参数： 
+command -options parameters 
+
+使用格式： 
+getopts option_string variable 
+
+具体使用方法请参考getopts的在线文档(man getopts). 
+
+示例如下： 
+
+#newdate 
+if [ $# -lt 1 ] 
+then 
+date 
+else 
+while getopts mdyDHMSTjJwahr OPTION 
+do 
+case $OPTION 
+in 
+m) date '+%m ';; # Month of Year 
+d) date '+%d ';; # Day of Month 
+y) date '+%y ';; # Year 
+D) date '+%D ';; # MM/DD/YY 
+H) date '+%H ';; # Hour 
+M) date '+%M ';; # Minute 
+S) date '+%S ';; # Second 
+T) date '+%T ';; # HH:MM:SS 
+j) date '+%j ';; # day of year 
+J) date '+%y%j ';;# 5 digit Julian date 
+w) date '+%w ';; # Day of the Week 
+a) date '+%a ';; # Day abbreviation 
+h) date '+%h ';; # Month abbreviation 
+r) date '+%r ';; # AM-PM time 
+\?) echo "Invalid option $OPTION";; 
+esac 
+done 
+fi 
+
+$ newdate -J 
+94031 
+$ newdate -a -h -d 
+Mon 
+Jan 
+31 
+$ newdate -ahd 
+Mon 
+Jan 
+31 
+$ 
+
+
+示例程序：复制程序 
+
+# Syntax: duplicate [-c integer] [-v] filename 
+# where integer is the number of duplicate copies 
+# and -v is the verbose option 
+
+COPIES=1 
+VERBOSE=N 
+
+
+while getopts vc: OPTION 
+do 
+case $OPTION 
+in 
+c) COPIES=$OPTARG;; 
+v) VERBOSE=Y;; 
+\?) echo "Illegal Option" 
+exit 1;; 
+esac 
+done 
+
+if [ $OPTIND -gt $# ] 
+then 
+echo "No file name specified" 
+exit 2 
+fi 
+
+
+shift `expr $OPTIND -1` 
+
+FILE=$1 
+COPY=0 
+
+while [ $COPIES -gt $COPY ] 
+do 
+COPY=`expr $COPY + 1` 
+cp $FILE ${FILE}${COPY} 
+if [ VERBOSE = Y ] 
+then 
+echo ${FILE}${COPY} 
+fi 
+done 
+
+
+$ duplicate -v fileA 
+fileA1 
+$ duplicate -c 3 -v fileB 
+fileB1 
+fileB2 
+fileB3 
+
+
+4. Shell的定制 
+通常使用shell的定制来控制用户自己的环境，比如改变shell的外观(提示符)以及增强 
+自己的命令。 
+
+(1)通常环境变量来定制shell 
+通常改变环境变量可以定制shell的工作环境。shell在处理信息时会参考这些环境变量 
+，改变环境变量的值在一定程度上改变shell的操作方式，比如改变命令行提示符。 
+
+.使用IFS增加命令行分隔符 
+默认状态下shell的分隔符为空格、制表符及换行符，但可以通过改变IFS的值加入自己 
+的分隔符。如下所示： 
+
+
+$ IFS=":" 
+$ echo:Hello:my:Friend 
+Hello my Friend 
+
+(2)加入自己的命令及函数 
+如下程序： 
+#Directory and Prompt change program 
+#Syntax: chdir directory 
+
+if [ ! -d "$1" ] 
+then 
+echo "$1 is not a directory" 
+exit 1 
+fi 
+
+cd $1 
+PS1=`pwd`$ 
+export PS1 
+
+$ chdir /usr/home/teresa 
+$ 
+
+但此程序在执行时系统提示符并不会改变，因为此程序是在子shell中执行的。因此其变量 
+对当前shell并无影响，要想对当前shell起作用，最好是将此作为函数写在自己的.profile中 
+或建立自己的个人函数文件.persfuncs 
+
+#Personal function file persfuncs 
+
+chdir() 
+{ 
+#Directory and Prompt change program 
+#Syntax: chdir directory 
+if [ ! -d "$1" ] 
+then 
+echo "$1 is not a directory" 
+exit 1 
+fi 
+
+cd $1 
+PS1=`pwd`$ 
+export PS1; 
+} 
+
+再执行： 
+$ . .persfuncs 
+$ chdir temp 
+/home/hbbwork/temp$ 
+
+也可在自己的.profile文件中用 . .persfuncs调用.persfuncs. 
+
+说明：在bash/tcsh中已经使用别名，相对而言别名比此方法更为方便。 
+
+
+5. 有关shell的专门讨论 
+(1)shell程序的调试 
+切记：程序员（人）总是会犯错误的，而计算机是不会错的。 
+使用-x进行跟踪执行，执行并显示每一条指令。 
+
+(2)命令组 
+用小括号将一组命令括起来，则这些命令会由子shell来完成；而{command_list;}则在当 
+前shell中执行。这两者的主要区别在于其对shell变量的影响，子shell执行的命令不会 
+影响当前shell中的变量。 
+
+$ NUMBER=2 
+$ (A=2;B=2;NUMBER=`expr $A + $B`; echo $NUMBER) 
+4 
+$ echo $NUMBER 
+2 
+$ { A=2;B=2;NUMBER=`expr $A + $B`; echo $NUMBER; } 
+4 
+$ echo $NUMBER 
+4 
+
+
+总结： 
+在本章中讲述了Bourne Shell的基本知识,使用shell变量，shell script基础。这些概念 
+对于理解学习Korn Shell, csh以及其他script编程都是非常有用的。 
+
+很多OS都有不少语言及一些script功能，但很少有象UNIX SHELL这样灵活强大的script脚 
+本语言能力。 
+
+对于系统管理员或程序员来说，熟练地使用shell script将对日常工作(系统维护及管理) 
+非常有用，如果你想作一个合格的系统管理员，强烈建议你进一步深入的了解和使用 
+shell. 
+
+另外，对于系统管理员来说，PERL也是一个必不可少的script编程语言，尤其是对于处理 
+文本格式的各种文件，PERL具有shell, awk, sed, grep等的功能，但使用起来更为灵活， 
+功能也更强大。大家可以参考“Perl By Examples"来学习和使用PERL。 
+</FONT>
+</PRE></TD></TR></TBODY></TABLE>
+<ADDRESS><BIG><FONT color=#000040 size=1>made by pageshop of CERNET network 
+centre of DaLian region.copyright 1999</FONT> <BR><BR></BIG></ADDRESS>
+<TABLE cellSpacing=0 cellPadding=0 width=660 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD><a href="bshell01.htm"><IMG height=26 
+      src="bshell02.files/preview.jpg" width=72 border=0></a><a href="http://cpss.zz.ha.cn"><IMG height=26 
+      src="bshell02.files/top.jpg" width=72 border=0></a><IMG height=26 
+      src="bshell02.files/next.jpg" width=72 
+  border=0></TD></TR></TBODY></TABLE>
+<P>　</P>
+<ADDRESS><BIG></BIG></ADDRESS></CENTER></DIV></FORM></BODY></HTML>

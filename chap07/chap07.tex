@@ -1,0 +1,910 @@
+\documentclass[compress]{beamer}
+
+\usepackage[nofonts]{ctex}
+\setCJKmainfont[ItalicFont={Kaiti SC}]{Kaiti SC}%
+%\setCJKsansfont{Heiti SC}% 文泉驿的黑体
+
+\mode<beamer>
+{
+    \setbeamercovered{transparent}
+
+    \useinnertheme{rounded}
+    %\useoutertheme{miniframes}
+    \useoutertheme{split}
+    %\usecolortheme{orchid}
+    %\usecolortheme{whale}
+    %\usecolortheme{lily}
+    \usecolortheme{rose}
+    \usecolortheme{seahorse}
+
+    %\usetheme{Warsaw}
+	%\useoutertheme[footline=institutetitle]{miniframes}
+
+	\expandafter\def\expandafter\insertshorttitle\expandafter{%
+	\insertshorttitle\hfill%
+	\insertframenumber\,/\,\inserttotalframenumber}
+}
+
+\mode<handout>
+{
+	\usetheme{default}
+	\usepackage{pgfpages}
+	\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+}
+
+
+\usepackage{amsmath,latexsym,amssymb,amsfonts,amsbsy}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{fancyvrb}
+\fvset{frame=single,fontsize=\small}
+
+\newcommand{\romannumber}[1]{{\textrm{\uppercase\expandafter{\romannumeral
+#1}}}}
+\setbeamercolor{dblue}{fg=white,bg=blue!40!black} % for beamercolorbox
+\newenvironment{pblock}{\begin{beamercolorbox}[rounded=true,
+                      shadow=true]{dblue}}{\end{beamercolorbox}}
+
+\graphicspath{{figure/}}
+
+\lstset{
+	basicstyle=\footnotesize\ttfamily, % print whole listing footnotesize
+	keywordstyle=\footnotesize\ttfamily\color{black}\bfseries, 
+	identifierstyle=\footnotesize\ttfamily\color{blue}, 
+	commentstyle=\footnotesize\ttfamily\itshape, 
+	stringstyle=\footnotesize\ttfamily,
+	frame=single, 
+	numbers=left, numberstyle=\tiny,
+	stepnumber=1, numbersep=10pt,
+	showtabs=false, tabsize=4,
+	showstringspaces=false,
+	breaklines=true, breakatwhitespace=true,
+	language=sh
+}   
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    body                                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\AtBeginSection[]
+{ 
+    \begin{frame}<beamer> 
+		\frametitle{内容提要} 
+		\tableofcontents[currentsection,hideallsubsections] 
+	\end{frame} 
+} 
+					
+\title{文本处理}
+
+\author[\href{http://c.pku.edu.cn/}{http://c.pku.edu.cn/}]
+{曹东刚\\\href{mailto:caodg@sei.pku.edu.cn}{caodg@sei.pku.edu.cn}}
+
+\institute{Linux程序设计环境 \\
+\href{http://c.pku.edu.cn/}{
+http://c.pku.edu.cn/}}
+
+\date{}
+
+\titlegraphic{\includegraphics[height=0.17\textwidth]{Overlays/logo.pdf}}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+
+\section{小工具}
+
+\subsection{tr}
+
+\begin{frame}[fragile]
+\frametitle{tr}
+\emph{tr} 用于从标准输入中通过替换或删除操作进行字符转换\\
+\emph{tr}命令格式\\
+\verb~tr [OPTION] SET1 [SET2]~\\
+常用OPTION
+\begin{itemize}
+\item -s : 删除 SET1 中重复出现的字符序列
+\item -d : 删除 SET1 中所有字符
+\item -c : 求 SET1 的补集
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{字符范围}
+\begin{tabular}{|l@{\hspace{0.5cm}}l|}
+\hline
+
+\verb=[c1-c2]= & ASCII字符c1和c2之间的字符\\
+\verb=[c1c2]= &  ASCII字符c1和c2\\
+\verb=/oct= & 三位8进制数, 对应ASCII字符 \\
+\verb=[O*n]= & 字符O重复出现n次\\ \hline
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{示例}
+
+\begin{itemize}
+\item 去除重复出现的字符 \\
+\begin{Verbatim}
+tr -s "[a-z]"
+\end{Verbatim}
+
+\item 删除空行 \\
+\begin{Verbatim}
+tr -s "\n"
+\end{Verbatim}
+
+\item 大小写转换\\
+\begin{Verbatim}
+tr "[a-z]" "[A-Z]"
+\end{Verbatim}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例 (cont)}
+
+\begin{itemize}
+\item 将DOS格式(回车\verb~\r~、换行\verb~\n~)转换为Unix格式(以\verb~\n~换行)\\
+\begin{Verbatim}
+tr -d "\r"
+\end{Verbatim}
+
+\item 找到文件中的所有单词, 每行一个输出
+\begin{Verbatim}
+tr -cs "[a-zA-Z]" '\n'
+\end{Verbatim}
+\end{itemize}
+
+\end{frame}
+
+\subsection{cut/paste}
+
+\begin{frame}[fragile]
+\frametitle{cut}
+\emph{cut}用来从标准输入或文本文件中抽取数据列或域\\
+\emph{cut}命令格式\\
+\verb~cut [OPTION] [FILES]~\\
+常用OPTION
+\begin{itemize}
+\item -c LIST : 指定剪切字符数. LIST如下单表达式或由逗号分隔的表达式组合:
+N : 第N个字符; N--M : 第N到第M个字符; N-- : 从第N个字符到行尾
+
+\item -d delimiter-char : 指定非TAB分隔字符
+\item -f LIST : 指定剪切的域, LIST形式同-c
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例}
+
+\begin{itemize}
+\item 从文件/etc/passwd中剪切用户名及用户主目录 \\
+passwd文件格式:\\
+\verb~ftp:x:103:65534::/home/ftp:/bin/false~\\
+\begin{Verbatim}
+cut -d : -f1,6 /etc/passwd
+\end{Verbatim}
+
+\item 显示当前谁在使用系统\\
+\begin{Verbatim}
+who |  cut -c 1-8
+\end{Verbatim}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{paste}
+\emph{cut} 用来从文本文件或标准输入中抽取数据列或者域, \emph{paste} 将按行将不同文件行信息放在一行\\
+\emph{paste}命令格式\\
+\verb~paste [OPTION] [FILES]~\\
+常用OPTION
+\begin{itemize}
+\item -d delimiter-char : 指定非TAB分隔字符
+\item -s : 将每个文件粘贴为一行而不是逐行粘贴
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例}
+
+\begin{itemize}
+\item 将文件a.txt和b.txt合并 \\
+\begin{Verbatim}
+paste a.txt b.txt
+\end{Verbatim}
+
+\item 从管道输入, 每行显示多列\\
+利用选项``--'', 意即对每一个``--'', 从标准输入中读一次数据。\\
+\begin{Verbatim}
+ls | paste - - - -
+\end{Verbatim}
+
+\end{itemize}
+
+\end{frame}
+
+\subsection{sort/uniq}
+
+\begin{frame}
+\frametitle{sort}
+\begin{itemize}
+\item \emph{sort} 命令将许多不同的域按不同的列顺序分类
+\item sort假定工作文件已经被分过类
+    \begin{itemize}
+    \item 文件是结构化的, 符合一定的模式, 如/etc/passwd文件
+    \item 通常情况用\emph{awk}将文件格式化输出后, 再用\emph{sort}进行排序
+    \end{itemize}
+\item 缺省情况下, \emph{sort} 以一系列空格或TAB为分隔符
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例}
+
+\begin{itemize}
+\item 基本排序, 缺省按照第一域按字典进行分类 \\
+\begin{Verbatim}
+sort -t: /etc/passwd
+\end{Verbatim}
+
+\item 逆向排序, 对第三列按数字排序 \\
+\begin{Verbatim}
+sort -t: -r +2n /etc/passwd
+sort -t: -r -k3n /etc/passwd
+\end{Verbatim}
+
+\item 分类排序, 先对passwd文件第三列排序, 再对第七列排序\\
+\begin{Verbatim}
+sort -t: -k3 -k7 /etc/passwd
+\end{Verbatim}
+
+\item 将两个已分类文件合并\\
+\begin{Verbatim}
+sort -m +0 patch.txt sorted.txt
+\end{Verbatim}
+
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{uniq}
+\begin{itemize}
+\item  \emph{uniq} 用来从一个文本文件中去除或禁止重复行
+\item 一般 \emph{uniq} 假定文件已分类, 并且结果正确
+\end{itemize}
+\emph{uniq}命令格式\\
+\verb~uniq [OPTION] [INPUT]~\\
+常用OPTION
+\begin{itemize}
+\item -u : 只显示不重复行
+\item -d : 只显示有重复数据行, 每种重复行只显示其中一行
+\item -c : 打印每一重复行出现次数
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{统计文件中单词出现频率}
+
+    \begin{itemize}
+    \item <+-> 找所有的单词
+\begin{Verbatim}
+    grep -o -P '\b[a-zA-Z]+\b'    
+\end{Verbatim}
+    \item <+-> 统计
+\begin{Verbatim}
+    sort | uniq -c   
+\end{Verbatim}
+\end{itemize}
+\end{frame}
+
+\subsection{join}
+
+\begin{frame}
+\frametitle{join}
+\begin{itemize}
+\item \emph{join} 用来将来自两个分类文本文件的行连在一起, 类似SQL语言的join命令
+\item 文本文件中的域通常由空格或tab键分隔, 也可以指定其他的域分隔符
+\item 一些系统要求使用 \emph{join} 时文件域要少于20; 如果域大于20, 应使用DBMS系统
+\item 为有效使用\emph{join}, 需分别将输入文件分类
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{示例: 数据文件}
+
+数据文件 name.dat
+\begin{Verbatim}
+s00348228 1034 LiRuihang 
+s00348230 1036 MaJianzhu 
+s00348281 1035 RaoXiangrong 
+s00348282 1037 ChengZhiwen 
+\end{Verbatim}
+
+数据文件 score.dat
+\begin{Verbatim}
+s00348228 10  20 
+s00348229 8   18
+s00348231 9   19 
+s00348282 7   20
+\end{Verbatim}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例}
+
+\begin{itemize}
+\item 连接两个文件 \\
+例: join name.dat score.dat 结果:\\
+\begin{tabular}{lllll}
+s00348228 & 1034 & LiRuihang & 10 & 20\\
+s00348282 & 1037 & ChengZhiwen & 7 & 20\\
+\end{tabular} 
+
+\item 指定连接域 \\
+例: join -1 1 -2 2 name.dat score.dat
+
+\item 指定输出域\\
+例: join -o1.1,2.2,2.3
+结果:\\
+\begin{tabular}{lll}
+s00348228 & 10 & 20\\
+s00348282 & 7 & 20\\
+\end{tabular}
+
+\end{itemize}
+
+\end{frame}
+
+\subsection{head/tail}
+
+\begin{frame}[fragile]
+	\frametitle{head和tail}
+head和tail分别读取文件的前几行与后几行. 这在要读取的文件(通常是log)很大(如200M), 要读取的内容恰好在文件的开始/结束位置时很好用. 
+
+\begin{Verbatim}
+tail -30 /var/log/syslog
+\end{Verbatim}
+\end{frame}
+
+\subsection{xargs}
+
+\begin{frame}[fragile]
+    \frametitle{xargs 从标准输入重建并执行命令行}
+\begin{Verbatim}
+$cat t.txt 
+1 2 3 
+4 5 6
+\end{Verbatim}
+\begin{Verbatim}
+$cat t.txt | xargs echo
+1 2 3 4 5 6
+\end{Verbatim}
+\begin{Verbatim}
+$cat t.txt | xargs -n 2 
+1 2 
+3 4 
+5 6
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{xargs 示例}
+\begin{Verbatim}
+$echo "foo,bar,baz" | xargs -d, -L 1 echo
+\end{Verbatim}
+\pause
+\begin{Verbatim}
+$ls | xargs -t -L 4 echo
+\end{Verbatim}
+\pause
+\begin{Verbatim}
+$xargs -a foo -d, -L 1 echo
+\end{Verbatim}
+\pause
+\begin{Verbatim}
+$find . -type f -name "*.c" -print0 | xargs -0 wc -l
+\end{Verbatim}
+\pause
+\noindent 避免 ``Too Many Arguments''问题
+\begin{Verbatim}
+$find . -type d -name ".svn" -print | xargs rm -rf
+\end{Verbatim}
+\end{frame}
+
+\subsection{其他}
+
+\begin{frame}[fragile]
+	\frametitle{tee}
+tee可以从标准输入读取数据，并数据输出到标准输出上，并输出到多个文件中.
+
+\begin{Verbatim}
+ls -l | tee ls.txt lt.txt
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{iconv与convmv}
+改变文本文件内容的编码.
+
+\begin{Verbatim}
+iconv -f utf8 -t gbk
+\end{Verbatim}
+
+改变文本文件名的编码: convmv \\
+
+可能需要首先探查文件编码: enca
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{split}
+\emph{split} 用来将大文件分割成小文件, 缺省以1000行为单位进行分割.
+通过 -b 参数可以指定分割单位, 如-b 50m指定以50M为单位
+
+\begin{itemize}
+\item 例: 文件\verb~debian-installer.iso~为110M, 现在将其分解为60M的小文件\\
+split -b 60m debian-installer.iso\\
+生成文件名为xaa xab的两个文件
+
+\item 例: 将文件xaa xab复原\\
+cat xaa xab $>$ x.iso
+\end{itemize}
+
+\end{frame}
+
+\subsection{示例}
+
+\begin{frame}[fragile]
+\frametitle{综合示例: 统计出现频率最高的单词}
+\begin{verbatim}
+#!/bin/sh
+# 统计文本流中出现频率最高的前n个单词列表
+# usage: wf [n]
+\end{verbatim}
+\pause
+\begin{verbatim}
+tr -cs A-Za-z '\n'      | 
+\end{verbatim}
+\pause \vspace{-5ex}
+\begin{verbatim}
+ tr A-Z a-z             | 
+\end{verbatim}
+\pause \vspace{-5ex}
+\begin{verbatim}
+   sort                 | 
+     uniq -c            | 
+\end{verbatim}
+\pause \vspace{-5ex}
+\begin{verbatim}
+       sort -k1nr -k2   |
+\end{verbatim}
+\pause \vspace{-5ex}
+\begin{verbatim}
+        head -5
+\end{verbatim}
+\end{frame}
+
+
+\section{sed与awk}
+
+\subsection{基础}
+
+\begin{frame}[fragile]
+\frametitle{awk和sed基础}
+
+\emph{sed}和\emph{awk}是Unix环境中最强大的文本过滤工具, 他们有一些相似之处
+\begin{itemize}
+\item 激活语法相同:
+    \begin{itemize}
+    \item \verb~command 'script' filenames~
+    \item command 为 \emph{sed}或\emph{awk}, script则是分别被\emph{sed}或\emph{awk}理解的命令清单
+    \end{itemize}
+\item 用户可为输入文件的每一行指定执行的指令
+\item 为匹配模式使用正则表达式
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{基本操作}
+
+当\emph{sed}和\emph{awk}命令运行时, 执行如下操作
+\begin{enumerate}
+\item \label{sed.awk.op.1}从输入文件读入一行
+\item 为该行做一个拷贝
+\item 在该行上执行所给的脚本script
+\item 处理下一行, 重复第\ref{sed.awk.op.1}步
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{脚本结构及执行}
+
+\emph{sed}和\emph{awk}指定的脚本script包含一行或多行记录, 格式为:\\
+/pattern/action\\
+脚本执行:
+\begin{enumerate}
+\item \label{sed.awk.script.1}顺序搜索每个pattern, 直到发生一个匹配
+\item 当发现匹配后, 为输入行执行相应的动作action
+\item 当动作执行完毕, 到达下一个模式, 并重复第\ref{sed.awk.script.1}步
+\item 当所有模式都试过后, 读取下一行
+\end{enumerate}
+\end{frame}
+
+\subsection{sed}
+
+\begin{frame}
+\frametitle{sed}
+
+\emph{sed}中常用的动作\\[1ex]
+
+\begin{tabular}{p{5cm}l}\hline
+动作 & 描述 \\ \hline
+p & 打印该行 \\
+d & 删除该行 \\
+s/pattern1/pattern2/ & 用pattern2替换pattern1 \\
+\{ COMMAND \} & 一组命令 \\
+: LABEL & 定义标号 \\
+b LABEL & 跳到标号 \\ \hline
+
+\end{tabular}
+
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{示例: 数据文件}
+
+{cat fruit.txt}\\[1ex]
+\begin{tabular}{p{2cm}l}
+Fruit & Price/lbs \\
+Banana & 0.89 \\
+Paech & 0.79 \\
+Kiwi & 1.50 \\
+Pineapple & 1.29 \\
+Apple & 0.99 \\
+Mango & 2.20 \\
+\end{tabular}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例}
+
+\begin{itemize}
+\item 打印水果价格低于1美元的水果清单\\
+\begin{Verbatim}
+sed -n '/0\.[0-9][0-9]$/p' fruit.txt
+\end{Verbatim}
+
+\item 删除清单中关于芒果的信息\\
+\begin{Verbatim}
+sed '/^[Mm]ango/d' fruit.txt
+\end{Verbatim}
+
+\item 将清单中错误的Paech拼写纠正过来\\
+\begin{Verbatim}
+sed 's/Paech/Peach/' fruit.txt
+\end{Verbatim}
+
+\item 在清单中单价前面增加美元字符\\
+\begin{Verbatim}
+sed 's/[0-9][0-9]*\.[0-9][0-9]$/\$&/' fruit.txt
+\end{Verbatim}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例}
+\begin{Verbatim}
+find  /home/tolstoy -type d -print |
+ sed 's;/home/tolstoy/;/home/lt/;' |
+  sed 's/^/mkdir /'                |
+   sh -x
+\end{Verbatim}
+\end{frame}
+
+\subsection{awk}
+
+\begin{frame}
+\frametitle{awk}
+
+\begin{itemize}
+\item \emph{awk} 是一个完整的编程语言, 支持按模式搜索文件并有条件的改变文件
+\item \emph{awk} 可以自动将输入行分隔为域(Field). 域是被一个或多个域分隔符分隔的字符串,
+缺省域分隔符为TAB和空格
+\item \emph{awk} 有三个主要版本
+    \begin{itemize}
+    \item 最初的\emph{awk}, 源自1978年的Unix V7
+    \item 新版的\emph{nawk}, 1987年发布为SunOS 4.1的一部分
+    \item POSIX/GNU版的\emph{gawk}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{示例: 数据文件}
+
+{cat fruit.txt}\\[1ex]
+\begin{tabular}{p{2cm}p{3cm}l}
+Fruit & Price/lbs & Quantity\\
+Banana & \$0.89 & 100\\
+Paech & \$0.79 & 65\\
+Kiwi & \$1.50 & 22\\
+Pineapple & \$1.29 & 35\\
+Apple & \$0.99 & 78\\
+Mango & \$2.20 & 46\\
+\end{tabular}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例--1}
+
+\begin{itemize}
+\item 打印水果名称及数量\\
+  {\small \verb~awk '{ print $1, $3 }' fruit.txt~}\\
+格式化输出:\\
+{\small \verb~awk '{ printf "%-15s %s\n", $1, $3 }' fruit.txt~}
+
+\item 在价格高于1美元的水果行后加上一个"*"\\
+\begin{lstlisting}
+#!/bin/sh
+ awk '
+    /\$[1-9][0-9]*\.[0-9][0-9]*/ { print $0, "*" }
+    /\$0\.[0-9][0-9]*/ { print }
+ ' fruit.txt
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{示例--2}
+
+查找所有数量低于70的水果, 标记其为``REORDER''\\
+\begin{lstlisting}
+#!/bin/sh
+ awk '
+    $3 <= 70 { print $0, "REORDER" }
+    $3 > 75 { print $0 }
+ ' fruit.txt
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{示例--3}
+
+查找单价高于1美元, 数量低于70的水果 \\
+\begin{lstlisting}
+#!/bin/sh
+ awk '
+    ($2 ~ /^\$[1-9][0-9]*\.[0-9][0-9]$/) && ($3 <= 70) {
+        printf "%s\t%s\t%s\n", $0, "*", "REORDER"
+    }
+ ' fruit.txt
+ \end{lstlisting}
+
+\end{frame}
+
+\section{parallel}
+
+\begin{frame}[fragile]
+    \frametitle{利用多核/多机并行执行脚本}
+\begin{block}{GNU parallel}
+一个 Linux 下的脚本工具，用来并行执行本地/远程机器上的作业.
+\begin{itemize}
+    \item 从标准输入读取, 每行输入启动一个命令或脚本执行. 
+    \begin{itemize}
+    \item 典型输入: 文件列表,  URL列表, 主机列表, 表格等
+    \end{itemize}
+    \item 缺省每核启动一个进程
+    \item 可以对大文件自动分块处理, 然后合并结果
+    \item 完全可替换 \verb~xargs, cat | bash~
+\end{itemize}
+\end{block}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{替换 xargs}
+\begin{Verbatim}
+find . -type d -print | xargs echo Dir:
+find . -type d -print | parallel -X echo Dir:
+find . -type d -print | xargs -I {} echo Dir: {}
+find . -type d -print | parallel echo Dir: {}
+\end{Verbatim}
+\pause
+\begin{Verbatim}
+ls | xargs -t -L 4 echo
+ls | parallel -t -L 4 echo
+\end{Verbatim}
+\pause
+\begin{Verbatim}
+find . -type d -name ".svn" -print | xargs rm -rf
+find . -type d -name ".svn" -print | parallel rm -rf
+\end{Verbatim}
+\pause
+\begin{Verbatim}
+find . -type d -name ".svn" -print | parallel -m rm -rf
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{从命令行读入}
+\begin{itemize}
+\item <1->压缩所有的html文件 \\
+\begin{Verbatim}
+parallel gzip ::: *.html
+\end{Verbatim}
+\item <2->将所有wav文件转化为mp3文件, 每个核启动一个进程 \\
+\begin{Verbatim}
+parallel lame {} -o {.}.mp3 ::: *.wav
+\end{Verbatim}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{替换}
+删除 pict0000.jpg到pict9999.jpg
+\begin{itemize}
+\item [] <1-> 逐个删除 \\
+\begin{Verbatim}
+seq -w 0 9999 | parallel rm pict{}.jpg 
+\end{Verbatim}
+\item [] <2-> 批量删除 \\
+\begin{Verbatim}
+seq -w 0 9999 | perl -pe 's/(.*)/pict$1.jpg/' |  \
+     parallel -m rm
+seq -w 0 9999 | parallel -X rm pict{}.jpg
+\end{Verbatim}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{加速}
+\noindent 比较
+\begin{Verbatim}
+seq -w 0 9999 | parallel touch pict{}.jpg
+seq -w 0 9999 | parallel -X touch pict{}.jpg
+\end{Verbatim}
+\noindent 如果脚本无法接受多个参数, 可以启动多个parallel
+\begin{Verbatim}
+seq -w 0 999999 | parallel -j10 --pipe \
+    parallel -j0 touch pict{}.jpg
+\end{Verbatim}
+\verb~-j0~如果启动512个进程, 则总共启动最多5120个进程
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{结果收集}
+GNU parallel缺省会将作业的输出收集后输出, 因此只有作业结束后结果才会输出. 如果希望作业在运行时也会输出, 可以使用\verb~-u~选项.\\
+
+比较
+\begin{Verbatim}
+parallel traceroute ::: sf.net debian.org
+\end{Verbatim}
+和
+\begin{Verbatim}
+parallel -u traceroute ::: sf.net debian.org
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{使用远程主机}
+\alert{前提: 能够无密码ssh登陆远程主机, 可用ssh-copy-id设置}    
+\begin{Verbatim}
+seq 10 | parallel --sshlogin server.example.com echo
+seq 10 | parallel --sshlogin 8/server.example.com echo
+seq 10 | parallel --sshlogin user1@server.example.com \
+      --sshlogin user1@server2.example.net echo
+\end{Verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{传输文件}
+\begin{Verbatim}
+find logs/ -name '*.gz' | \
+    parallel --sshlogin server1,server2,server3 \
+        --transfer "zcat {} | bzip2 -9 >{.}.bz2"
+\end{Verbatim}
+\begin{Verbatim}
+find logs/ -name '*.gz' | \
+    parallel --sshlogin server.example.com \
+        --transfer --return {.}.bz2 "zcat {} | \
+            bzip2 -9 >{.}.bz2"
+\end{Verbatim}
+\begin{Verbatim}
+find logs/ -name '*.gz' | \
+    parallel -S server.example.com,: \
+        --trc {.}.bz2 "zcat {} | bzip2 -9 >{.}.bz2"
+\end{Verbatim}
+\end{frame}
+
+\section<article>{附加}
+
+\begin{frame}<article>[fragile]
+	\frametitle{expand/unexpand}
+	expand将文件中的tab替换为空格, 输出到标准输出.
+
+\begin{Verbatim}
+expand -t 4 hello.c
+\end{Verbatim}
+
+\end{frame}
+
+\begin{frame}<article>[fragile]
+\frametitle{fmt: 重新格式化段落}
+\begin{Verbatim}
+$ fmt -s -w 10 << EOF
+> one two three four five
+> six
+> seven
+> eight
+EOF
+one two
+three
+four five
+six
+seven
+eight
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}<article>[fragile]
+    \frametitle{小技巧--1}
+
+    \begin{tabular}{|l|p{6cm}|} \hline
+脚本片段 & 效果 \\ \hline\hline
+\verb~find /usr -print~ & 找出``/usr''下的所有文件  \\ \hline
+\verb~seq 1 100~ & 打印1到100的整数 \\ \hline
+\verb~|xargs -n 1 <cmd>~ & 以管道传过来的每项数据为参数, 重复运行cmd命令 \\ \hline
+\verb~|xargs -n 1 echo~ & 将管道传过来的以空格分隔的数据逐行显示  \\ \hline
+\verb~|xargs echo~ & 将管道传过来的所有数据合并成一行 \\ \hline
+\verb~|cut -d: -f3 -~ & 将管道传过来的以:分隔的数据的第三列取出 \\ \hline
+\end{tabular}
+
+\end{frame}
+
+\begin{frame}<article>[fragile]
+    \frametitle{小技巧--2}
+
+    \begin{tabular}{|p{5cm}|p{5cm}|} \hline
+脚本片段 & 效果 \\ \hline\hline
+\verb~|awk '{print $3}'~ &  将管道传过来的以空格分隔的数据的第三列取出  \\ \hline
+\verb~|awk -F':' '{print $3}'~ &  将管道传过来的以:分隔的数据的第三列取出  \\ \hline
+\verb~|sort | uniq ~ & 排序并去重 \\ \hline
+\verb~|tr -d '\r' ~ & 删除 CR\\ \hline
+\verb~|sed 's/^/#/'~ & 每行行首增加一个'\#'\\ \hline
+\verb~|sed -n -e 2p~ & 打印第二行\\ \hline
+\verb~|tail -n 2 -~ & 打印最后二行\\ \hline
+\end{tabular}
+
+\end{frame}
+
+\end{document}

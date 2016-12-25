@@ -1,0 +1,63 @@
+This is pdfeTeX, Version 3.141592-1.11b-2.1 (MiKTeX 2.4) (preloaded format=latex 2005.8.23)  23 MAY 2006 09:08
+entering extended mode
+**struct.tex
+(struct.tex{pdftex.cfg}
+LaTeX2e <2001/06/01>
+Babel <v3.7m> and hyphenation patterns for english, french, german, ngerman, du
+mylang, nohyphenation, loaded.
+(E:\latex\texmf\tex\latex\base\article.cls
+Document Class: article 2001/04/21 v1.4e Standard LaTeX document class
+(E:\latex\texmf\tex\latex\base\size11.clo
+File: size11.clo 2001/04/21 v1.4e Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) (struct.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <17.28> on input line 6.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 6.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 6.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 6.
+ [1
+
+{psfonts.map}{cjk.map}{cyberb_ttf.map}{context.map
+Warning: pdflatex (file context.map): entry for `contnav' already exists, dupli
+cates ignored
+}] (struct.aux) ) 
+Here is how much of TeX's memory you used:
+ 250 strings out of 95508
+ 2441 string characters out of 1189415
+ 46246 words of memory out of 1049797
+ 3390 multiletter control sequences out of 35000
+ 8502 words of font info for 30 fonts, out of 500000 for 3000
+ 14 hyphenation exceptions out of 607
+ 21i,6n,19p,134b,186s stack positions out of 1500i,500n,5000p,200000b,32768s
+ 16 PDF objects out of 65536
+ 0 named destinations out of 20000
+ 1 words of extra memory for PDF output out of 65536
+<cmr10.pfb><cmbx12.pfb><cmr12.pfb><cmr17.pfb>
+Output written on struct.pdf (1 page, 31217 bytes).

@@ -1,0 +1,310 @@
+%!PS-Adobe-2.0
+%%Creator: dvips(k) 5.90a Copyright 2002 Radical Eye Software
+%%Title: hello.dvi
+%%CreationDate: Mon May 22 23:02:34 2006
+%%Pages: 1
+%%PageOrder: Ascend
+%%BoundingBox: 0 0 596 842
+%%DocumentFonts: CMR10
+%%DocumentPaperSizes: a4
+%%EndComments
+%DVIPSWebPage: (www.radicaleye.com)
+%DVIPSCommandLine: DVIPS.EXE -P pdf hello
+%DVIPSParameters: dpi=8000, compressed
+%DVIPSSource:  TeX output 2006.05.22:2302
+%%BeginProcSet: tex.pro
+%!
+/TeXDict 300 dict def TeXDict begin/N{def}def/B{bind def}N/S{exch}N/X{S
+N}B/A{dup}B/TR{translate}N/isls false N/vsize 11 72 mul N/hsize 8.5 72
+mul N/landplus90{false}def/@rigin{isls{[0 landplus90{1 -1}{-1 1}ifelse 0
+0 0]concat}if 72 Resolution div 72 VResolution div neg scale isls{
+landplus90{VResolution 72 div vsize mul 0 exch}{Resolution -72 div hsize
+mul 0}ifelse TR}if Resolution VResolution vsize -72 div 1 add mul TR[
+matrix currentmatrix{A A round sub abs 0.00001 lt{round}if}forall round
+exch round exch]setmatrix}N/@landscape{/isls true N}B/@manualfeed{
+statusdict/manualfeed true put}B/@copies{/#copies X}B/FMat[1 0 0 -1 0 0]
+N/FBB[0 0 0 0]N/nn 0 N/IEn 0 N/ctr 0 N/df-tail{/nn 8 dict N nn begin
+/FontType 3 N/FontMatrix fntrx N/FontBBox FBB N string/base X array
+/BitMaps X/BuildChar{CharBuilder}N/Encoding IEn N end A{/foo setfont}2
+array copy cvx N load 0 nn put/ctr 0 N[}B/sf 0 N/df{/sf 1 N/fntrx FMat N
+df-tail}B/dfs{div/sf X/fntrx[sf 0 0 sf neg 0 0]N df-tail}B/E{pop nn A
+definefont setfont}B/Cw{Cd A length 5 sub get}B/Ch{Cd A length 4 sub get
+}B/Cx{128 Cd A length 3 sub get sub}B/Cy{Cd A length 2 sub get 127 sub}
+B/Cdx{Cd A length 1 sub get}B/Ci{Cd A type/stringtype ne{ctr get/ctr ctr
+1 add N}if}B/CharBuilder{save 3 1 roll S A/base get 2 index get S
+/BitMaps get S get/Cd X pop/ctr 0 N Cdx 0 Cx Cy Ch sub Cx Cw add Cy
+setcachedevice Cw Ch true[1 0 0 -1 -.1 Cx sub Cy .1 sub]{Ci}imagemask
+restore}B/D{/cc X A type/stringtype ne{]}if nn/base get cc ctr put nn
+/BitMaps get S ctr S sf 1 ne{A A length 1 sub A 2 index S get sf div put
+}if put/ctr ctr 1 add N}B/I{cc 1 add D}B/bop{userdict/bop-hook known{
+bop-hook}if/SI save N @rigin 0 0 moveto/V matrix currentmatrix A 1 get A
+mul exch 0 get A mul add .99 lt{/QV}{/RV}ifelse load def pop pop}N/eop{
+SI restore userdict/eop-hook known{eop-hook}if showpage}N/@start{
+userdict/start-hook known{start-hook}if pop/VResolution X/Resolution X
+1000 div/DVImag X/IEn 256 array N 2 string 0 1 255{IEn S A 360 add 36 4
+index cvrs cvn put}for pop 65781.76 div/vsize X 65781.76 div/hsize X}N
+/p{show}N/RMat[1 0 0 -1 0 0]N/BDot 260 string N/Rx 0 N/Ry 0 N/V{}B/RV/v{
+/Ry X/Rx X V}B statusdict begin/product where{pop false[(Display)(NeXT)
+(LaserWriter 16/600)]{A length product length le{A length product exch 0
+exch getinterval eq{pop true exit}if}{pop}ifelse}forall}{false}ifelse
+end{{gsave TR -.1 .1 TR 1 1 scale Rx Ry false RMat{BDot}imagemask
+grestore}}{{gsave TR -.1 .1 TR Rx Ry scale 1 1 false RMat{BDot}
+imagemask grestore}}ifelse B/QV{gsave newpath transform round exch round
+exch itransform moveto Rx 0 rlineto 0 Ry neg rlineto Rx neg 0 rlineto
+fill grestore}B/a{moveto}B/delta 0 N/tail{A/delta X 0 rmoveto}B/M{S p
+delta add tail}B/b{S p tail}B/c{-4 M}B/d{-3 M}B/e{-2 M}B/f{-1 M}B/g{0 M}
+B/h{1 M}B/i{2 M}B/j{3 M}B/k{4 M}B/w{0 rmoveto}B/l{p -4 w}B/m{p -3 w}B/n{
+p -2 w}B/o{p -1 w}B/q{p 1 w}B/r{p 2 w}B/s{p 3 w}B/t{p 4 w}B/x{0 S
+rmoveto}B/y{3 2 roll p a}B/bos{/SS save N}B/eos{SS restore}B end
+
+%%EndProcSet
+%%BeginProcSet: alt-rule.pro
+%!
+% Patch by TVZ
+% Makes dvips files draw rules with stroke rather than fill.
+% Makes narrow rules more predictable at low resolutions
+% after distilling to PDF.
+% May have unknown consequences for very thick rules.
+% Tested only with dvips 5.85(k).
+TeXDict begin
+/QV {
+  gsave newpath /ruleY X /ruleX X
+  Rx Ry gt
+  { ruleX ruleY Ry 2 div sub moveto Rx 0 rlineto Ry }
+  { ruleX Rx 2 div add ruleY moveto 0 Ry neg rlineto Rx }
+  ifelse
+  setlinewidth 0 setlinecap stroke grestore
+} bind def
+end
+
+%%EndProcSet
+%%BeginProcSet: texc.pro
+%!
+/TeXDict 300 dict def TeXDict begin/N{def}def/B{bind def}N/S{exch}N/X{S
+N}B/A{dup}B/TR{translate}N/isls false N/vsize 11 72 mul N/hsize 8.5 72
+mul N/landplus90{false}def/@rigin{isls{[0 landplus90{1 -1}{-1 1}ifelse 0
+0 0]concat}if 72 Resolution div 72 VResolution div neg scale isls{
+landplus90{VResolution 72 div vsize mul 0 exch}{Resolution -72 div hsize
+mul 0}ifelse TR}if Resolution VResolution vsize -72 div 1 add mul TR[
+matrix currentmatrix{A A round sub abs 0.00001 lt{round}if}forall round
+exch round exch]setmatrix}N/@landscape{/isls true N}B/@manualfeed{
+statusdict/manualfeed true put}B/@copies{/#copies X}B/FMat[1 0 0 -1 0 0]
+N/FBB[0 0 0 0]N/nn 0 N/IEn 0 N/ctr 0 N/df-tail{/nn 8 dict N nn begin
+/FontType 3 N/FontMatrix fntrx N/FontBBox FBB N string/base X array
+/BitMaps X/BuildChar{CharBuilder}N/Encoding IEn N end A{/foo setfont}2
+array copy cvx N load 0 nn put/ctr 0 N[}B/sf 0 N/df{/sf 1 N/fntrx FMat N
+df-tail}B/dfs{div/sf X/fntrx[sf 0 0 sf neg 0 0]N df-tail}B/E{pop nn A
+definefont setfont}B/Cw{Cd A length 5 sub get}B/Ch{Cd A length 4 sub get
+}B/Cx{128 Cd A length 3 sub get sub}B/Cy{Cd A length 2 sub get 127 sub}
+B/Cdx{Cd A length 1 sub get}B/Ci{Cd A type/stringtype ne{ctr get/ctr ctr
+1 add N}if}B/id 0 N/rw 0 N/rc 0 N/gp 0 N/cp 0 N/G 0 N/CharBuilder{save 3
+1 roll S A/base get 2 index get S/BitMaps get S get/Cd X pop/ctr 0 N Cdx
+0 Cx Cy Ch sub Cx Cw add Cy setcachedevice Cw Ch true[1 0 0 -1 -.1 Cx
+sub Cy .1 sub]/id Ci N/rw Cw 7 add 8 idiv string N/rc 0 N/gp 0 N/cp 0 N{
+rc 0 ne{rc 1 sub/rc X rw}{G}ifelse}imagemask restore}B/G{{id gp get/gp
+gp 1 add N A 18 mod S 18 idiv pl S get exec}loop}B/adv{cp add/cp X}B
+/chg{rw cp id gp 4 index getinterval putinterval A gp add/gp X adv}B/nd{
+/cp 0 N rw exit}B/lsh{rw cp 2 copy get A 0 eq{pop 1}{A 255 eq{pop 254}{
+A A add 255 and S 1 and or}ifelse}ifelse put 1 adv}B/rsh{rw cp 2 copy
+get A 0 eq{pop 128}{A 255 eq{pop 127}{A 2 idiv S 128 and or}ifelse}
+ifelse put 1 adv}B/clr{rw cp 2 index string putinterval adv}B/set{rw cp
+fillstr 0 4 index getinterval putinterval adv}B/fillstr 18 string 0 1 17
+{2 copy 255 put pop}for N/pl[{adv 1 chg}{adv 1 chg nd}{1 add chg}{1 add
+chg nd}{adv lsh}{adv lsh nd}{adv rsh}{adv rsh nd}{1 add adv}{/rc X nd}{
+1 add set}{1 add clr}{adv 2 chg}{adv 2 chg nd}{pop nd}]A{bind pop}
+forall N/D{/cc X A type/stringtype ne{]}if nn/base get cc ctr put nn
+/BitMaps get S ctr S sf 1 ne{A A length 1 sub A 2 index S get sf div put
+}if put/ctr ctr 1 add N}B/I{cc 1 add D}B/bop{userdict/bop-hook known{
+bop-hook}if/SI save N @rigin 0 0 moveto/V matrix currentmatrix A 1 get A
+mul exch 0 get A mul add .99 lt{/QV}{/RV}ifelse load def pop pop}N/eop{
+SI restore userdict/eop-hook known{eop-hook}if showpage}N/@start{
+userdict/start-hook known{start-hook}if pop/VResolution X/Resolution X
+1000 div/DVImag X/IEn 256 array N 2 string 0 1 255{IEn S A 360 add 36 4
+index cvrs cvn put}for pop 65781.76 div/vsize X 65781.76 div/hsize X}N
+/p{show}N/RMat[1 0 0 -1 0 0]N/BDot 260 string N/Rx 0 N/Ry 0 N/V{}B/RV/v{
+/Ry X/Rx X V}B statusdict begin/product where{pop false[(Display)(NeXT)
+(LaserWriter 16/600)]{A length product length le{A length product exch 0
+exch getinterval eq{pop true exit}if}{pop}ifelse}forall}{false}ifelse
+end{{gsave TR -.1 .1 TR 1 1 scale Rx Ry false RMat{BDot}imagemask
+grestore}}{{gsave TR -.1 .1 TR Rx Ry scale 1 1 false RMat{BDot}
+imagemask grestore}}ifelse B/QV{gsave newpath transform round exch round
+exch itransform moveto Rx 0 rlineto 0 Ry neg rlineto Rx neg 0 rlineto
+fill grestore}B/a{moveto}B/delta 0 N/tail{A/delta X 0 rmoveto}B/M{S p
+delta add tail}B/b{S p tail}B/c{-4 M}B/d{-3 M}B/e{-2 M}B/f{-1 M}B/g{0 M}
+B/h{1 M}B/i{2 M}B/j{3 M}B/k{4 M}B/w{0 rmoveto}B/l{p -4 w}B/m{p -3 w}B/n{
+p -2 w}B/o{p -1 w}B/q{p 1 w}B/r{p 2 w}B/s{p 3 w}B/t{p 4 w}B/x{0 S
+rmoveto}B/y{3 2 roll p a}B/bos{/SS save N}B/eos{SS restore}B end
+
+%%EndProcSet
+%%BeginProcSet: texps.pro
+%!
+TeXDict begin/rf{findfont dup length 1 add dict begin{1 index/FID ne 2
+index/UniqueID ne and{def}{pop pop}ifelse}forall[1 index 0 6 -1 roll
+exec 0 exch 5 -1 roll VResolution Resolution div mul neg 0 0]/Metrics
+exch def dict begin Encoding{exch dup type/integertype ne{pop pop 1 sub
+dup 0 le{pop}{[}ifelse}{FontMatrix 0 get div Metrics 0 get div def}
+ifelse}forall Metrics/Metrics currentdict end def[2 index currentdict
+end definefont 3 -1 roll makefont/setfont cvx]cvx def}def/ObliqueSlant{
+dup sin S cos div neg}B/SlantFont{4 index mul add}def/ExtendFont{3 -1
+roll mul exch}def/ReEncodeFont{CharStrings rcheck{/Encoding false def
+dup[exch{dup CharStrings exch known not{pop/.notdef/Encoding true def}
+if}forall Encoding{]exch pop}{cleartomark}ifelse}if/Encoding exch def}
+def end
+
+%%EndProcSet
+%%BeginFont: CMR10
+%!PS-AdobeFont-1.1: CMR10 1.00B
+%%CreationDate: 1992 Feb 19 19:54:52
+% Copyright (C) 1997 American Mathematical Society. All Rights Reserved.
+11 dict begin
+/FontInfo 7 dict dup begin
+/version (1.00B) readonly def
+/Notice (Copyright (C) 1997 American Mathematical Society. All Rights Reserved) readonly def
+/FullName (CMR10) readonly def
+/FamilyName (Computer Modern) readonly def
+/Weight (Medium) readonly def
+/ItalicAngle 0 def
+/isFixedPitch false def
+end readonly def
+/FontName /CMR10 def
+/PaintType 0 def
+/FontType 1 def
+/FontMatrix [0.001 0 0 0.001 0 0] readonly def
+/Encoding 256 array
+0 1 255 {1 index exch /.notdef put} for
+dup 33 /exclam put
+dup 49 /one put
+dup 72 /H put
+dup 100 /d put
+dup 101 /e put
+dup 108 /l put
+dup 111 /o put
+dup 114 /r put
+dup 119 /w put
+readonly def
+/FontBBox{-251 -250 1009 969}readonly def
+/UniqueID 5000793 def
+currentdict end
+currentfile eexec
+D9D66F633B846A97B686A97E45A3D0AA052A014267B7904EB3C0D3BD0B83D891
+016CA6CA4B712ADEB258FAAB9A130EE605E61F77FC1B738ABC7C51CD46EF8171
+9098D5FEE67660E69A7AB91B58F29A4D79E57022F783EB0FBBB6D4F4EC35014F
+D2DECBA99459A4C59DF0C6EBA150284454E707DC2100C15B76B4C19B84363758
+469A6C558785B226332152109871A9883487DD7710949204DDCF837E6A8708B8
+2BDBF16FBC7512FAA308A093FE5CF7158F1163BC1F3352E22A1452E73FECA8A4
+87100FB1FFC4C8AF409B2067537220E605DA0852CA49839E1386AF9D7A1A455F
+D1F017CE45884D76EF2CB9BC5821FD25365DDEA6E45F332B5F68A44AD8A530F0
+92A36FAC8D27F9087AFEEA2096F839A2BC4B937F24E080EF7C0F9374A18D565C
+295A05210DB96A23175AC59A9BD0147A310EF49C551A417E0A22703F94FF7B75
+409A5D417DA6730A69E310FA6A4229FC7E4F620B0FC4C63C50E99E179EB51E4C
+4BC45217722F1E8E40F1E1428E792EAFE05C5A50D38C52114DFCD24D54027CBF
+2512DD116F0463DE4052A7AD53B641A27E81E481947884CE35661B49153FA19E
+0A2A860C7B61558671303DE6AE06A80E4E450E17067676E6BBB42A9A24ACBC3E
+B0CA7B7A3BFEA84FED39CCFB6D545BB2BCC49E5E16976407AB9D94556CD4F008
+24EF579B6800B6DC3AAF840B3FC6822872368E3B4274DD06CA36AF8F6346C11B
+43C772CC242F3B212C4BD7018D71A1A74C9A94ED0093A5FB6557F4E0751047AF
+D72098ECA301B8AE68110F983796E581F106144951DF5B750432A230FDA3B575
+5A38B5E7972AABC12306A01A99FCF8189D71B8DBF49550BAEA9CF1B97CBFC7CC
+96498ECC938B1A1710B670657DE923A659DB8757147B140A48067328E7E3F9C3
+7D1888B284904301450CE0BC15EEEA00E48CCD6388F3FC3BE18EFA2C389E5E30
+A01122D4441EBDC07E8FF810DAC4B013B1B89F5E18548EFFA31C3777BB187362
+FBBE6623184ECD991A057D130019D498D2ED4D2564124D648B1E0956E861DE83
+22DE4B89AD33CEC6DD6BC2744D542521314697AC87F8582E18ACD9233CB483DE
+3038D43DEE9C4101EC3001E16A8AB4DBF57849C544A743267A6C9B510BA2D4BA
+A94F5957E3FA951B817B69BEDF51BE484A6FA1B22079BB32D468F393A6187502
+C4D904A26BA22D3EA5867045C5621797FB5B6216077AF948D21F19461C01EB6D
+54A084D3DCC5ABC5DF3CADC870236751D9EF221AC1E7BD29FDC20E11094E2852
+779FC5C0D5DB9D3C8E4443F64E4037AC19B46A1050451ECEB053DC8EB7B1FC8E
+4B8175703FEC53549A80FA0B8B14AD07A99A7BEF99111BABBBEDB83B50CB2D6E
+44036DA3DE4A6BB700EFA22290B3DC8113DB1B383EC98F8367ECA284490AEE8D
+2E2DBB374BA8B0C30D5E782C9B7DB4551E2BFB4BE67A1833D36D09829FA03EE7
+D559D5AA9876BCCBAA3972BCABAB06157DBFB18A3A746FA3102EAD32D37460CE
+2099273F1622C089AB3CB216A5C27D66D2C8170187CDF780CAF45A8E0C2D394A
+26B50F8BE2ED926D812092E92DA4D04D0895B07B66D5344986A0FC7A8B2F7B9B
+62EE1105F37A99A308E7DA80A3018D0ABC05D3F178B531BA4517B18300254453
+0CED9C755ED7FB6640DEBDACC45D477D8788EFC79A0297F6D5CBB83FAEE7B897
+F107662E8467FAC8D9E2AA0F906F3B47E80DCC1112B17D53D40A2B6069113FFA
+623E46BE165E6F804BE8F048CBABB1F17C135472030108CBA8AC573D7380FC35
+63D88AEDC9A339CF931828B48D80B932FDFEBB8A80ABD3372BF7B61D458BBC8C
+B555C4BB952A962C5008F8307B7C34682C28E730A33EAE234DC75FCDEDD0FF4E
+AA2C6A0D8E6BB90C96AD4E9E52D42C8B3806FA06180F1EFF5CEA5ACE58B45399
+5E3D6FE3C16131FF2A0FE6279AD6383238F60ABB4CA2CBC269D90D21B62674F1
+6AC59608F55AF52A75DA390FEBC79E7F50D3DF9F3E5B6EB1E7F5517A86004C85
+A7529ECEB3758E9DFD534CAC1AAF06A06E4D4A687DA6F76FF4B424C52B014C68
+C1924EA4BD6E305B7FCB06520983CC6741DE803E5B6EB1E7F5517A8600491A4A
+0C4559544342F3D7F0EA48FFB4F4ABA1A08626724EA8152572E06176013D238B
+0F06405B8BAC22CB216F2F0E7FBA9902666131C05FBE9D637D9426405D0B2058
+366DC62413C4ED77641D77658018FBF081A3C0B2EEBA7799D91C652C9BD3701A
+C3D91B3287F1233727CC1CA7156B501616CA1DD2FF246FC373416E5C9C60F913
+A937DDFE2FFFC38C2440EB6BC3791DED9DE9D699BFF740BF832E92E398D43E36
+7035DDEF7931324E4478DF70490B05504482FA6E40CCEFB149CB029DD46750C1
+81D65080950315949A0D154A2E2588A2820A08868D720A8BB142D463C675F23A
+BD00477F5875D762CA61CEA90476A0C1D731CF5DC73BE566778F2E21B0A69926
+669E533B7556C343D20F45452A2F98BD014BB6980C51726F0FCD218F0E68BFB9
+516FD425F15F5610AF4B622CB6998AC95A7B079B7CCB31C4A2202C95D04D042E
+C93FA2A8229C48AC24B114DA929BF323BF3B1874037DA2839A11323FB65A3A54
+3556970DD392F89A3D9AC7B38FC9CFE80BB985EAAF718CF83B099ACCB2CB94B4
+B9575A992BDD0FBD6166B83D382EDFA4B1E1F4E92CE5DA52EA76F29E79C7E90A
+85C9992C0036A74C0C3D7B37310196DC8D9832494EACB9F495D45CD09F197A6F
+153DA1F33AE9322A699DD0C720FBE5D8C2163E070CF9BD83F094AC47F6C52FB5
+722C3242DF89C5271615E15FE6963843C3A74C2B6D87DDE4EAC6BFEBF3419676
+A5C75CDEF4F366888D87E2F9E06EE00AA5B37DECF3EC858FE9F4F456A1C083D1
+9CCA0C1EF913E29E419587F3F5F8F9AA8AD3BDBF239BC001C3B295948D13C018
+840C6BB6EE9502BDE462AE435942CFE7AE5A324C9621036ABB587223E17B6F7A
+9BC8A7E74DEFD43F439056D4F9AC354ABDFFAB82797C66FA6F1C8F41A6CA4A4E
+B906A4CE02DE492CD76597A0E868C4604D4C74F2D94BAD82A3596821FCCCC5A5
+F4CA6040ACFBCA4ECAE65CDB243BE96C657C488247A5990C6A4564399F4AD232
+4FE76ECDE79168E6E946A747ED66FA6E525D7F079AAECB710A5B508BF4C0CCE4
+1E83D94E6619027D53E5803512DC3DAC9E66B8AA31E7566663CB550799BB0406
+021AAEF45A7F9D179B886CC3AF5D2781836679693C1459F6280C5603D8308A73
+D5BB623E0156759137D6E23979C152E2B771AC55AB13DA0AFC048A66B9E3CABC
+55D70C23DAF7F62651F724CEC969A8F3C1D7713BEFBEF35C380B89DE396058F6
+57314171FE8420DDB046DD7CCFF261C7BB4D7FA731FCD70868665BD6D7E597FD
+6DBFAAF21A2AFCEAB64BCAEE4EA640AD6C6315B6D0DC5AAABBF35BB8B724CB8A
+4F60D7C9E98001E25902664EDA48EE55D629D12657C1A6634BE9ECDEBD847ADC
+B7156B519CCD8257DAD17C4CA562DE6E0DBD69CAEA0CC2D3BDD77A64E3784AD6
+04BC72ABD201D3D38E8797559CFA3DE263E54A3FBD9E078894F9126DA19E7862
+7E36A99967844BB9D1CEA8CCBACD0F5177B0C8CD46F85E055A4AAC92897D8F8E
+1029380A6E58D00CD63F6857650A82315813D007AEC416FA46AAE11817ABBD90
+DD889AD2428D209BEF4132C351B4054451A5B2BEB76A6C20E42E125C2897638F
+64BD59E5BF41C510922FD225612064DD793E252586D83BA33E290AEFE4982D6D
+CE60F1B977E3E0A7CE1239BB24C83B3ED5F620E369B4232E67E4013D06B1D418
+869416005969B13F4C906648CDCA032DE4DEA1CC3F923FC01B5437118168EBD9
+113E402C2474AD8F260798C2F19DF2E7FB771ABE2389C426300F85699D26A54E
+552ACDFCCC7E1264BC04836875887FFA094C58DED0D12321B68FABEFF19D8491
+5EEC61809E812D0935D592C3C56DD9C8B80897D5A17D7A0F503128F6761342E4
+089BCE1E6C410DA49152FB532CCB1082787F7C91452BB2A8A8F7475ACC031310
+882D8798C2744597058F0E6AD6F222F5A488BEF954C1FE7596CFD47D90691E02
+6EE97CE570E9035F766869E62A870E2646DC4D8F66135420AE6417F5D4CB7050
+8974421A31F41EF2060C5E9144DB8C8250DE2E2CA32932D8BCFCADE704AEF76C
+1B50CDE2F826A3CD4597FE05528799FFBD4F97C23565BE0E64D064081B75EE26
+FCB3848136CD0E88CED89D644E3EA9209C1D2D05473FCB06BFED
+0000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000
+cleartomark
+%%EndFont 
+TeXDict begin 39158280 55380996 1000 8000 8000 (hello.dvi)
+@start /Fa 136[799 4[434 2[553 2[307 6[492 615 27[830
+22[553 15[307 33[{}9 1106.96 /CMR10 rf end
+%%EndProlog
+%%BeginSetup
+%%Feature: *Resolution 8000dpi
+TeXDict begin
+%%BeginPaperSize: a4
+a4
+%%EndPaperSize
+ end
+%%EndSetup
+%%Page: 1 1
+TeXDict begin 1 0 bop 8524 6974 a Fa(Hello)370 b(w)-31
+b(orld!)25681 70071 y(1)p eop end
+%%Trailer
+
+userdict /end-hook known{end-hook}if
+%%EOF
